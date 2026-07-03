@@ -25,8 +25,16 @@ enabled = false
 
 [auth]
 enabled = true
-site_url = "http://localhost:3000"
-additional_redirect_urls = ["http://localhost:3000/auth/callback"]
+site_url = "https://battarbox.com"
+additional_redirect_urls = [
+  "https://battarbox.com/auth/callback",
+  "https://battarbox.com/**",
+  "https://www.battarbox.com/auth/callback",
+  "https://www.battarbox.com/**",
+  "https://battabatta.vercel.app/**",
+  "http://localhost:3000/auth/callback",
+  "http://localhost:3000/**"
+]
 jwt_expiry = 3600
 enable_signup = true
 
@@ -34,3 +42,62 @@ enable_signup = true
 enable_signup = true
 double_confirm_changes = true
 enable_confirmations = true
+
+[auth.email.template.confirmation]
+subject = "Confirm your Battarbox account"
+content_path = "./supabase/templates/confirmation.html"
+
+[auth.email.template.recovery]
+subject = "Reset your Battarbox password"
+content_path = "./supabase/templates/recovery.html"
+
+[auth.email.template.magic_link]
+subject = "Your Battarbox sign-in link"
+content_path = "./supabase/templates/magic_link.html"
+
+[auth.email.template.invite]
+subject = "You are invited to Battarbox"
+content_path = "./supabase/templates/invite.html"
+
+[auth.email.template.email_change]
+subject = "Confirm your new Battarbox email"
+content_path = "./supabase/templates/email_change.html"
+
+[auth.email.template.reauthentication]
+subject = "{{ .Token }} is your Battarbox verification code"
+content_path = "./supabase/templates/reauthentication.html"
+
+[auth.email.notification.password_changed]
+enabled = true
+subject = "Your Battarbox password was changed"
+content_path = "./supabase/templates/password_changed_notification.html"
+
+[auth.email.notification.email_changed]
+enabled = true
+subject = "Your Battarbox email was changed"
+content_path = "./supabase/templates/email_changed_notification.html"
+
+[auth.email.notification.identity_linked]
+enabled = true
+subject = "A sign-in method was linked to Battarbox"
+content_path = "./supabase/templates/identity_linked_notification.html"
+
+[auth.email.notification.identity_unlinked]
+enabled = true
+subject = "A sign-in method was removed from Battarbox"
+content_path = "./supabase/templates/identity_unlinked_notification.html"
+
+[auth.email.notification.phone_changed]
+enabled = true
+subject = "Your Battarbox phone number was changed"
+content_path = "./supabase/templates/phone_changed_notification.html"
+
+[auth.email.notification.mfa_factor_enrolled]
+enabled = true
+subject = "A Battarbox verification method was added"
+content_path = "./supabase/templates/mfa_factor_enrolled_notification.html"
+
+[auth.email.notification.mfa_factor_unenrolled]
+enabled = true
+subject = "A Battarbox verification method was removed"
+content_path = "./supabase/templates/mfa_factor_unenrolled_notification.html"

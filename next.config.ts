@@ -1,4 +1,5 @@
 import type { NextConfig } from "next";
+import { withSentryConfig } from "@sentry/nextjs";
 
 const isDev = process.env.NODE_ENV === "development";
 
@@ -18,6 +19,10 @@ const contentSecurityPolicy = [
   "style-src 'self' 'unsafe-inline'",
   `img-src 'self' data: blob: ${supabaseOrigin}`.trim(),
   "font-src 'self'",
+  // Sentry Session Replay runs its compression worker from a blob: URL.
+  "worker-src 'self' blob:",
+  // Sentry browser events go through the same-origin /monitoring tunnel, so
+  // connect-src does not need the Sentry ingest origin.
   `connect-src 'self' ${supabaseOrigin} ${supabaseWsOrigin}`.trim(),
   "frame-src https://checkout.stripe.com https://js.stripe.com",
   "frame-ancestors 'none'",
@@ -54,4 +59,11 @@ const nextConfig: NextConfig = {
   }
 };
 
-export default nextConfig;
+export default withSentryConfig(nextConfig, {
+  org: "one-million-small-startups-g3",
+  project: "javascript-nextjs",
+  authToken: process.env.SENTRY_AUTH_TOKEN,
+  widenClientFileUpload: true,
+  tunnelRoute: "/monitoring",
+  silent: !process.env.CI
+});
