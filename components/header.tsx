@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Image from "next/image";
 import { Plus, Search } from "lucide-react";
 import { getSessionUser } from "@/lib/auth";
 import { UserMenu } from "@/components/user-menu";
@@ -22,11 +23,23 @@ export async function Header() {
   return (
     <header className="sticky top-0 z-50 border-b border-line bg-white/95 backdrop-blur">
       <div className="mx-auto flex h-16 max-w-7xl items-center gap-4 px-5 sm:gap-8 sm:px-8">
-        <Link href="/" className="flex shrink-0 items-center gap-2.5">
-          <span className="flex size-7 items-center justify-center rounded-[7px] bg-ink text-[13px] font-bold text-white">
-            BB
-          </span>
-          <span className="hidden text-base font-bold tracking-[-0.02em] sm:inline">Battarbox</span>
+        <Link href="/" className="flex h-10 shrink-0 items-center" aria-label="Battarbox home">
+          <Image
+            src="/battarbox-favicon.png"
+            alt=""
+            width={32}
+            height={32}
+            priority
+            className="size-8 object-contain sm:hidden"
+          />
+          <Image
+            src="/battarbox-logo.png"
+            alt="Battarbox"
+            width={150}
+            height={50}
+            priority
+            className="hidden h-8 w-auto object-contain sm:block"
+          />
         </Link>
 
         <nav aria-label="Primary" className="flex items-center gap-1 overflow-x-auto">
