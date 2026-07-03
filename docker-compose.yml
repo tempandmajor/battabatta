@@ -1,0 +1,15 @@
+services:
+  web:
+    image: node:22-bookworm-slim
+    working_dir: /app
+    command: sh -c "npm install && npm run dev"
+    ports:
+      - "3000:3000"
+    env_file:
+      - .env.local
+    volumes:
+      - .:/app
+      - battabatta-node-modules:/app/node_modules
+
+volumes:
+  battabatta-node-modules:

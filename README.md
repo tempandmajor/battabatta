@@ -1,0 +1,65 @@
+# BattaBatta
+
+BattaBatta is an open-source, nonprofit-owned barter discovery app owned and maintained by OMS2.
+
+The product helps adults publish what they can offer, describe what they are seeking, discover local or online opportunities, and negotiate non-binding exchanges. BattaBatta does not process user-to-user payments, escrow, settlement, valuation, completion accounting, credits, or exchange ledgers.
+
+## Stack
+
+- Next.js App Router, React, TypeScript, Tailwind CSS
+- Supabase Auth and PostgreSQL with PostGIS, RLS on every table, and migrations
+- Supabase Storage for profile and post photos
+- Supabase Realtime for live messaging
+- Stripe Checkout and Billing for platform donations/supporter memberships only
+- Playwright, Vitest, ESLint, TypeScript checks
+
+## Features
+
+- Email/password auth with confirmation, password reset, and optional GitHub OAuth
+- Onboarding with 18+ confirmation and versioned terms/privacy consent capture
+- Profiles with photos, interests, follower counts, pause mode, and approximate-only public location
+- Offering/seeking posts with photos, availability limits, and approval policies
+- Discovery with local/online scope, category and kind filters, distance buckets (PostGIS), and full-text search
+- Saved posts, offers with a validated negotiation state machine, threaded realtime messaging with unread counts
+- Block and report tooling; blocks are enforced in the database, not just the UI
+- Give-what-you-can donations and supporter memberships via Stripe Checkout, with webhook-driven records
+
+## Local Development
+
+Prereqs: Node 22+, Docker (for Supabase), Supabase CLI.
+
+1. `npm install`
+2. `npm run db:start` — starts Supabase on ports 56321-56324, prints the anon and service-role keys
+3. `cp .env.example .env.local` and paste in the printed keys
+4. `npm run db:reset` — applies migrations and seeds demo members (password `password123`: jordan@, sam@, maya@, dev@, rosa@example.com)
+5. `npm run dev` and open `http://localhost:3000`
+
+Local emails (confirmations, resets) land in Inbucket at `http://127.0.0.1:56324`. Supabase Studio: `http://127.0.0.1:56323`.
+
+Stripe routes require `STRIPE_SECRET_KEY`, `STRIPE_WEBHOOK_SECRET`, and `STRIPE_SUPPORTER_PRICE_ID`. Use `npm run stripe:listen` to forward local webhooks. GitHub OAuth requires `SUPABASE_AUTH_GITHUB_CLIENT_ID`/`SECRET` in the environment before `db:start`.
+
+## Checks
+
+```bash
+npm run typecheck
+npm run lint
+npm run test        # unit (Vitest)
+npm run test:e2e    # Playwright, requires db:start + db:reset + .env.local
+```
+
+## Open Source Ownership
+
+The software is licensed under Apache 2.0. The BattaBatta name, logos, icons, and brand assets are trademarks or reserved brand assets of OMS2 and are not licensed for unrelated products.
+
+## Safety Boundaries
+
+- Adults only: onboarding requires 18+ confirmation and terms/privacy acceptance (recorded with versions).
+- Public location is approximate only: exact coordinates are stored privately, excluded from client-readable queries, and surfaced solely as bucketed distances ("1-5 mi") computed server-side.
+- Offers are non-binding negotiation records with a validated state machine (pending → interested/countered/declined/withdrawn/closed). No settlement, valuation, or completion states exist.
+- Availability limits decrement only when an offer is marked interested, and manual approval is the default.
+- Payments support the platform only; the Stripe billing portal is only ever opened for the authenticated member's own customer record.
+- AI features are deferred until core moderation, privacy, and legal controls are stable.
+
+## Compliance Notice
+
+The in-app legal pages (`/legal/*`) are drafts published for transparency and carry a "pending counsel review" banner. OMS2 should obtain legal, tax, privacy, nonprofit, and Stripe review before unrestricted public usage.
