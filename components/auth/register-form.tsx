@@ -2,8 +2,8 @@
 
 import Link from "next/link";
 import { useActionState } from "react";
-import { register, signInWithGitHub, type FormState } from "@/lib/actions/auth";
-import { Field, FormAlert, inputClass, primaryButtonClass, secondaryButtonClass } from "@/components/ui";
+import { register, type FormState } from "@/lib/actions/auth";
+import { Field, FormAlert, inputClass, primaryButtonClass } from "@/components/ui";
 
 export function RegisterForm() {
   const [state, formAction, pending] = useActionState<FormState, FormData>(register, {});
@@ -28,13 +28,6 @@ export function RegisterForm() {
         <FormAlert error={state.error} message={state.message} />
         <button type="submit" disabled={pending} className={`${primaryButtonClass} w-full`}>
           {pending ? "Creating account..." : "Create account"}
-        </button>
-      </form>
-
-      <form action={signInWithGitHub}>
-        <input type="hidden" name="next" value="/onboarding" />
-        <button type="submit" className={`${secondaryButtonClass} w-full`}>
-          Continue with GitHub
         </button>
       </form>
 

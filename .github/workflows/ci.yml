@@ -41,9 +41,6 @@ jobs:
           version: latest
       - run: npm ci
       - run: supabase start
-        env:
-          SUPABASE_AUTH_GITHUB_CLIENT_ID: ci-placeholder
-          SUPABASE_AUTH_GITHUB_SECRET: ci-placeholder
       - name: Write .env.local from supabase status
         run: |
           eval "$(supabase status -o env | grep -E '^(ANON_KEY|SERVICE_ROLE_KEY|API_URL)=')"

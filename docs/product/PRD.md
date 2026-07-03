@@ -6,7 +6,7 @@ Help adults discover local or online non-binding barter opportunities while prot
 
 ## MVP Workflows
 
-- Register, verify email, log in, log out, reset password, and use GitHub OAuth.
+- Register, verify email, log in, log out, and reset password.
 - Create a public profile with offers, interests, approximate location, and local/online preference.
 - Pause offers with “not offering at the moment.”
 - Publish offering and seeking posts.

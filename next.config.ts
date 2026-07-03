@@ -22,7 +22,7 @@ const contentSecurityPolicy = [
   "frame-src https://checkout.stripe.com https://js.stripe.com",
   "frame-ancestors 'none'",
   "base-uri 'self'",
-  "form-action 'self' https://checkout.stripe.com https://billing.stripe.com https://github.com"
+  "form-action 'self' https://checkout.stripe.com https://billing.stripe.com"
 ].join("; ");
 
 const securityHeaders = [

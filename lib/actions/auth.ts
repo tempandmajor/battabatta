@@ -55,20 +55,6 @@ export async function login(_prev: FormState, formData: FormData): Promise<FormS
   redirect(sanitizeNextPath(formData.get("next")) as Route);
 }
 
-export async function signInWithGitHub(formData: FormData): Promise<void> {
-  const next = sanitizeNextPath(formData.get("next"));
-  const supabase = await createSupabaseServerClient();
-  const { data, error } = await supabase.auth.signInWithOAuth({
-    provider: "github",
-    options: { redirectTo: `${getSiteUrl()}/auth/callback?next=${encodeURIComponent(next)}` }
-  });
-  if (error || !data.url) {
-    redirect(`/login?error=${encodeURIComponent(error?.message ?? "GitHub sign-in is not configured")}` as Route);
-  }
-  // External Stripe/GitHub authorize URL — outside the typed route table.
-  redirect(data.url as Route);
-}
-
 export async function signOut(): Promise<void> {
   const supabase = await createSupabaseServerClient();
   await supabase.auth.signOut();

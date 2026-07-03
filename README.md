@@ -15,7 +15,7 @@ The product helps adults publish what they can offer, describe what they are see
 
 ## Features
 
-- Email/password auth with confirmation, password reset, and optional GitHub OAuth
+- Email/password auth with confirmation and password reset
 - Onboarding with 18+ confirmation and versioned terms/privacy consent capture
 - Profiles with photos, interests, follower counts, pause mode, and approximate-only public location
 - Offering/seeking posts with photos, availability limits, and approval policies
@@ -36,7 +36,7 @@ Prereqs: Node 22+, Docker (for Supabase), Supabase CLI.
 
 Local emails (confirmations, resets) land in Inbucket at `http://127.0.0.1:56324`. Supabase Studio: `http://127.0.0.1:56323`.
 
-Stripe routes require `STRIPE_SECRET_KEY`, `STRIPE_WEBHOOK_SECRET`, and `STRIPE_SUPPORTER_PRICE_ID`. Use `npm run stripe:listen` to forward local webhooks. GitHub OAuth requires `SUPABASE_AUTH_GITHUB_CLIENT_ID`/`SECRET` in the environment before `db:start`.
+Stripe routes require `STRIPE_SECRET_KEY`, `STRIPE_WEBHOOK_SECRET`, and `STRIPE_SUPPORTER_PRICE_ID`. Use `npm run stripe:listen` to forward local webhooks.
 
 ## Checks
 

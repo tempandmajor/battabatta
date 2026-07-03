@@ -11,8 +11,7 @@ export default function PrivacyPage() {
       <h2>1. What we collect</h2>
       <ul>
         <li>
-          <strong>Account data:</strong> email address, password hash (managed by Supabase Auth), and optional GitHub
-          OAuth identity.
+          <strong>Account data:</strong> email address and password hash (managed by Supabase Auth).
         </li>
         <li>
           <strong>Profile data you publish:</strong> display name, handle, bio, interests, profile photo, an

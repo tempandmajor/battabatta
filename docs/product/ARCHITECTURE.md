@@ -4,7 +4,7 @@
 Browser
   -> Next.js App Router (server components + server actions)
   -> middleware.ts refreshes Supabase sessions on every request
-  -> Supabase Auth (email/password + optional GitHub OAuth, PKCE)
+  -> Supabase Auth (email/password, PKCE)
   -> Supabase Postgres: RLS on every table, PostGIS for distance, tsvector search
   -> Supabase Storage: public avatars / post-photos buckets, owner-folder write RLS
   -> Supabase Realtime: live thread messages (RLS-scoped postgres_changes)

@@ -2,8 +2,8 @@
 
 import Link from "next/link";
 import { useActionState } from "react";
-import { login, signInWithGitHub, type FormState } from "@/lib/actions/auth";
-import { Field, FormAlert, inputClass, primaryButtonClass, secondaryButtonClass } from "@/components/ui";
+import { login, type FormState } from "@/lib/actions/auth";
+import { Field, FormAlert, inputClass, primaryButtonClass } from "@/components/ui";
 
 export function LoginForm({ next, initialError }: { next: string; initialError?: string }) {
   const [state, formAction, pending] = useActionState<FormState, FormData>(login, {
@@ -30,13 +30,6 @@ export function LoginForm({ next, initialError }: { next: string; initialError?:
         <FormAlert error={state.error} message={state.message} />
         <button type="submit" disabled={pending} className={`${primaryButtonClass} w-full`}>
           {pending ? "Signing in..." : "Sign in"}
-        </button>
-      </form>
-
-      <form action={signInWithGitHub}>
-        <input type="hidden" name="next" value={next} />
-        <button type="submit" className={`${secondaryButtonClass} w-full`}>
-          Continue with GitHub
         </button>
       </form>
 
