@@ -5,7 +5,7 @@ import { Badge, secondaryButtonClass } from "@/components/ui";
 import { requireOnboardedUser } from "@/lib/auth";
 import { CATEGORY_LABEL, POST_KIND_LABEL, timeAgo } from "@/lib/format";
 
-export const metadata: Metadata = { title: "My posts · BattaBatta" };
+export const metadata: Metadata = { title: "My posts · Battarbox" };
 
 export default async function MyPostsPage() {
   const { supabase, user } = await requireOnboardedUser("/posts/mine");

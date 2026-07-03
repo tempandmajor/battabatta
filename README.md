@@ -1,8 +1,8 @@
-# BattaBatta
+# Battarbox
 
-BattaBatta is an open-source, nonprofit-owned barter discovery app owned and maintained by OMS2.
+Battarbox is an open-source, nonprofit-owned barter discovery app owned and maintained by OMS2.
 
-The product helps adults publish what they can offer, describe what they are seeking, discover local or online opportunities, and negotiate non-binding exchanges. BattaBatta does not process user-to-user payments, escrow, settlement, valuation, completion accounting, credits, or exchange ledgers.
+The product helps adults publish what they can offer, describe what they are seeking, discover local or online opportunities, and negotiate non-binding exchanges. Battarbox does not process user-to-user payments, escrow, settlement, valuation, completion accounting, credits, or exchange ledgers.
 
 ## Stack
 
@@ -49,9 +49,9 @@ npm run test:e2e    # Playwright, requires db:start + db:reset + .env.local
 
 ## Open Source
 
-BattaBatta is open-source software licensed under the MIT License. See `LICENSE` for the full license text.
+Battarbox is open-source software licensed under the MIT License. See `LICENSE` for the full license text.
 
-The BattaBatta name, logos, icons, and brand assets are trademarks or reserved brand assets of OMS2 and are not licensed for unrelated products. Forks and modified distributions should use a clearly distinct name and visual identity unless OMS2 grants written permission.
+The Battarbox name, logos, icons, and brand assets are trademarks or reserved brand assets of OMS2 and are not licensed for unrelated products. Forks and modified distributions should use a clearly distinct name and visual identity unless OMS2 grants written permission.
 
 Contributions are welcome under `CONTRIBUTING.md`, `CODE_OF_CONDUCT.md`, `SECURITY.md`, and `GOVERNANCE.md`.
 

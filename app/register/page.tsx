@@ -4,7 +4,7 @@ import { AuthCard } from "@/components/auth/auth-card";
 import { RegisterForm } from "@/components/auth/register-form";
 import { getSessionUser } from "@/lib/auth";
 
-export const metadata: Metadata = { title: "Create account · BattaBatta" };
+export const metadata: Metadata = { title: "Create account · Battarbox" };
 
 export default async function RegisterPage() {
   const { user } = await getSessionUser();

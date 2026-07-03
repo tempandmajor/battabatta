@@ -70,7 +70,7 @@ export function SupportPanel({ isSignedIn }: { isSignedIn: boolean }) {
         </p>
       )}
       <p className="mt-4 text-xs leading-5 text-muted">
-        Payments are processed by Stripe Checkout. BattaBatta does not collect card numbers or process user-to-user
+        Payments are processed by Stripe Checkout. Battarbox does not collect card numbers or process user-to-user
         barter payments.
       </p>
     </div>

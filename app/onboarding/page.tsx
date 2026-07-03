@@ -4,7 +4,7 @@ import { AuthCard } from "@/components/auth/auth-card";
 import { OnboardingForm } from "@/components/onboarding-form";
 import { requireUser } from "@/lib/auth";
 
-export const metadata: Metadata = { title: "Set up your profile · BattaBatta" };
+export const metadata: Metadata = { title: "Set up your profile · Battarbox" };
 
 export default async function OnboardingPage() {
   const { supabase, user } = await requireUser("/onboarding");
@@ -18,7 +18,7 @@ export default async function OnboardingPage() {
   return (
     <AuthCard
       title="Set up your profile"
-      subtitle="Tell neighbors what you trade. BattaBatta is for adults and every offer is a non-binding conversation."
+      subtitle="Tell neighbors what you trade. Battarbox is for adults and every offer is a non-binding conversation."
     >
       <OnboardingForm
         defaultDisplayName={profile?.display_name ?? emailPrefix}

@@ -32,7 +32,7 @@ export function RegisterForm() {
       </form>
 
       <p className="text-xs leading-5 text-muted">
-        BattaBatta is for adults (18+). After confirming your email you will be asked to confirm your age and accept
+        Battarbox is for adults (18+). After confirming your email you will be asked to confirm your age and accept
         the <Link href="/legal/terms" className="font-medium text-ink hover:underline">Terms of Use</Link> and{" "}
         <Link href="/legal/privacy" className="font-medium text-ink hover:underline">Privacy Policy</Link>.
       </p>

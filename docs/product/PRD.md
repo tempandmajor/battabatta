@@ -1,4 +1,4 @@
-# BattaBatta Product Requirements
+# Battarbox Product Requirements
 
 ## Goal
 

@@ -5,7 +5,7 @@ import { PostCard, type PostCardData } from "@/components/post-card";
 import { secondaryButtonClass } from "@/components/ui";
 import { requireOnboardedUser } from "@/lib/auth";
 
-export const metadata: Metadata = { title: "Saved posts · BattaBatta" };
+export const metadata: Metadata = { title: "Saved posts · Battarbox" };
 
 export default async function SavedPostsPage() {
   const { supabase, user } = await requireOnboardedUser("/saved");

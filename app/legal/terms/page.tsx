@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 
-export const metadata: Metadata = { title: "Terms of Use · BattaBatta" };
+export const metadata: Metadata = { title: "Terms of Use · Battarbox" };
 
 export default function TermsPage() {
   return (
@@ -8,24 +8,24 @@ export default function TermsPage() {
       <h1>Terms of Use</h1>
       <p className="updated">Version 2026-07-02-draft · Last updated July 2, 2026</p>
 
-      <h2>1. What BattaBatta is</h2>
+      <h2>1. What Battarbox is</h2>
       <p>
-        BattaBatta is an open-source, nonprofit-owned barter discovery service operated by OMS2. It helps adults
+        Battarbox is an open-source, nonprofit-owned barter discovery service operated by OMS2. It helps adults
         publish what they can offer, describe what they are seeking, discover local or online opportunities, and
         negotiate non-binding exchanges through messaging.
       </p>
 
-      <h2>2. What BattaBatta is not</h2>
+      <h2>2. What Battarbox is not</h2>
       <p>
-        BattaBatta does not provide payment processing between users, escrow, settlement, valuation, shipping,
+        Battarbox does not provide payment processing between users, escrow, settlement, valuation, shipping,
         completion accounting, credits, exchange ledgers, dispute resolution, or tax, legal, or safety services for
-        user exchanges. Offers made on BattaBatta are conversation records, not contracts. Whether, where, and how you
+        user exchanges. Offers made on Battarbox are conversation records, not contracts. Whether, where, and how you
         meet or exchange goods or services is entirely your decision and your responsibility.
       </p>
 
       <h2>3. Eligibility</h2>
       <p>
-        You must be at least 18 years old to use BattaBatta. By creating an account you confirm your age and agree to
+        You must be at least 18 years old to use Battarbox. By creating an account you confirm your age and agree to
         these Terms and the <a href="/legal/privacy">Privacy Policy</a>.
       </p>
 
@@ -39,7 +39,7 @@ export default function TermsPage() {
       <h2>5. Acceptable use</h2>
       <ul>
         <li>Only list goods and services you can lawfully offer. See <a href="/legal/prohibited-items">Prohibited Items</a>.</li>
-        <li>No commercial marketplace behavior: BattaBatta is for personal, non-monetary exchange discovery.</li>
+        <li>No commercial marketplace behavior: Battarbox is for personal, non-monetary exchange discovery.</li>
         <li>No harassment, hate, spam, deception, scraping, or attempts to bypass safety controls (including blocks).</li>
         <li>Never ask another member for payment, deposits, or fees as part of an exchange.</li>
         <li>Do not post other people's personal information, or your own precise address.</li>

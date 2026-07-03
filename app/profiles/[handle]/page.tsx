@@ -12,7 +12,7 @@ import { CATEGORY_LABEL, LOCATION_MODE_LABEL, POST_KIND_LABEL } from "@/lib/form
 
 export async function generateMetadata({ params }: { params: Promise<{ handle: string }> }): Promise<Metadata> {
   const { handle } = await params;
-  return { title: `@${handle} · BattaBatta` };
+  return { title: `@${handle} · Battarbox` };
 }
 
 export default async function ProfilePage({ params }: { params: Promise<{ handle: string }> }) {

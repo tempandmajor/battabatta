@@ -64,5 +64,5 @@ export async function submitReport(_prev: FormState, formData: FormData): Promis
   });
   if (error) return { error: error.message };
 
-  return { message: "Report received. Our moderators will review it. Thank you for keeping BattaBatta safe." };
+  return { message: "Report received. Our moderators will review it. Thank you for keeping Battarbox safe." };
 }

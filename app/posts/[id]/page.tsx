@@ -19,20 +19,20 @@ export async function generateMetadata({ params }: { params: Promise<{ id: strin
     .select("title, body, post_photos (path, position)")
     .eq("id", id)
     .maybeSingle();
-  if (!post) return { title: "Post · BattaBatta" };
+  if (!post) return { title: "Post · Battarbox" };
 
   const description = post.body.length > 160 ? `${post.body.slice(0, 157)}...` : post.body;
   const cover = [...(post.post_photos ?? [])].sort((a, b) => a.position - b.position)[0];
   const images = cover ? [{ url: publicStorageUrl("post-photos", cover.path), alt: post.title }] : undefined;
 
   return {
-    title: `${post.title} · BattaBatta`,
+    title: `${post.title} · Battarbox`,
     description,
     openGraph: {
       title: post.title,
       description,
       type: "article",
-      siteName: "BattaBatta",
+      siteName: "Battarbox",
       images
     },
     twitter: {

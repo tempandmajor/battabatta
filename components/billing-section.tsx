@@ -44,7 +44,7 @@ export function BillingSection({
       ) : (
         <div className="space-y-3 rounded-xl border border-line p-4">
           <p className="text-[13px] leading-6 text-muted">
-            BattaBatta is free. If it is useful to you, consider{" "}
+            Battarbox is free. If it is useful to you, consider{" "}
             <Link href="/support" className="font-semibold text-ink hover:underline">
               supporting the platform
             </Link>

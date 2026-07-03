@@ -5,7 +5,7 @@ import { ThreadList, type ThreadSummary } from "@/components/thread-list";
 import { secondaryButtonClass } from "@/components/ui";
 import { requireOnboardedUser } from "@/lib/auth";
 
-export const metadata: Metadata = { title: "Messages · BattaBatta" };
+export const metadata: Metadata = { title: "Messages · Battarbox" };
 
 export default async function MessagesPage() {
   const { supabase, user } = await requireOnboardedUser("/messages");

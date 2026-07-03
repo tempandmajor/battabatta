@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 
-export const metadata: Metadata = { title: "Privacy Policy · BattaBatta" };
+export const metadata: Metadata = { title: "Privacy Policy · Battarbox" };
 
 export default function PrivacyPage() {
   return (
@@ -86,7 +86,7 @@ export default function PrivacyPage() {
       </p>
 
       <h2>8. Children</h2>
-      <p>BattaBatta is for adults 18+. We do not knowingly collect data from minors and delete such accounts.</p>
+      <p>Battarbox is for adults 18+. We do not knowingly collect data from minors and delete such accounts.</p>
 
       <h2>9. Changes and contact</h2>
       <p>

@@ -12,7 +12,7 @@ import { blockProfile } from "@/lib/actions/social";
 import { requireOnboardedUser } from "@/lib/auth";
 import { OFFER_STATUS_LABEL } from "@/lib/format";
 
-export const metadata: Metadata = { title: "Messages · BattaBatta" };
+export const metadata: Metadata = { title: "Messages · Battarbox" };
 
 function offerStatusText(status: string, isRequester: boolean): string {
   switch (status) {
@@ -180,7 +180,7 @@ export default async function ThreadPage({
               </p>
             )}
             <p className="mt-3 flex items-center gap-2 text-xs text-muted">
-              <Shield size={14} aria-hidden /> Offers are non-binding. BattaBatta does not process settlement,
+              <Shield size={14} aria-hidden /> Offers are non-binding. Battarbox does not process settlement,
               valuation, escrow, or completion accounting.
             </p>
           </div>

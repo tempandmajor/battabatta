@@ -6,7 +6,7 @@ import { Avatar, avatarTone } from "@/components/avatar";
 import { OfferForm } from "@/components/offer-form";
 import { requireOnboardedUser } from "@/lib/auth";
 
-export const metadata: Metadata = { title: "New offer · BattaBatta" };
+export const metadata: Metadata = { title: "New offer · Battarbox" };
 
 export default async function NewOfferPage({
   searchParams

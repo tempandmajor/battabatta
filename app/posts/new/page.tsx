@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { PostForm } from "@/components/post-form";
 import { requireOnboardedUser } from "@/lib/auth";
 
-export const metadata: Metadata = { title: "New post · BattaBatta" };
+export const metadata: Metadata = { title: "New post · Battarbox" };
 
 export default async function NewPostPage() {
   await requireOnboardedUser("/posts/new");

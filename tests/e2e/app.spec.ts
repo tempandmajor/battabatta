@@ -40,7 +40,7 @@ test.describe("anonymous visitor", () => {
 
   test("support page explains payment boundary", async ({ page }) => {
     await page.goto("/support");
-    await expect(page.getByRole("heading", { name: "Keep BattaBatta free" })).toBeVisible();
+    await expect(page.getByRole("heading", { name: "Keep Battarbox free" })).toBeVisible();
     await expect(page.getByText("never pay another user for an exchange")).toBeVisible();
   });
 });
@@ -75,7 +75,7 @@ test.describe("member journey", () => {
     await page.getByRole("button", { name: "Send offer" }).click();
     await page.waitForURL("**/messages/**");
 
-    await expect(page.getByText("BattaBatta does not process settlement")).toBeVisible();
+    await expect(page.getByText("Battarbox does not process settlement")).toBeVisible();
     await page.getByPlaceholder("Write a message...").fill("Hi Sam! Fresh print for a lively starter?");
     await page.getByRole("button", { name: "Send", exact: true }).click();
     await expect(page.getByText("Fresh print for a lively starter?")).toBeVisible();
@@ -88,7 +88,7 @@ test.describe("member journey", () => {
     await page.getByText("Maya Lindqvist").first().click();
     await page.waitForURL("**/messages/**");
     // Wait for the offer card to render before inspecting its state.
-    await expect(page.getByText("BattaBatta does not process settlement")).toBeVisible();
+    await expect(page.getByText("Battarbox does not process settlement")).toBeVisible();
 
     // Click until the state changes: on a heavily loaded machine a click can
     // land before hydration and get swallowed, so re-click after a reload.

@@ -22,8 +22,8 @@ export function Footer() {
         </nav>
         <div className="space-y-2 text-xs leading-5 text-muted">
           <p>
-            BattaBatta is an open-source, nonprofit-owned barter discovery app maintained by OMS2. Offers are
-            non-binding conversations: BattaBatta never processes user-to-user payments, escrow, settlement,
+            Battarbox is an open-source, nonprofit-owned barter discovery app maintained by OMS2. Offers are
+            non-binding conversations: Battarbox never processes user-to-user payments, escrow, settlement,
             valuation, or completion accounting.
           </p>
           <p>

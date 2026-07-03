@@ -61,7 +61,7 @@ export async function POST(request: NextRequest) {
     if (!customerId && !isDonation) {
       const customer = await stripe.customers.create({
         email: privateProfile?.email ?? user.email ?? undefined,
-        metadata: { battabatta_profile_id: user.id }
+        metadata: { battarbox_profile_id: user.id }
       });
       customerId = customer.id;
       await supabase
@@ -88,9 +88,9 @@ export async function POST(request: NextRequest) {
             price_data: {
               currency: "usd",
               product_data: {
-                name: "BattaBatta give-what-you-can support",
+                name: "Battarbox give-what-you-can support",
                 description:
-                  "Supports the free, nonprofit-owned BattaBatta platform. This is not payment for a barter exchange."
+                  "Supports the free, nonprofit-owned Battarbox platform. This is not payment for a barter exchange."
               },
               unit_amount: parsed.data.amount ?? 1000
             },
@@ -104,7 +104,7 @@ export async function POST(request: NextRequest) {
           }
         ],
     metadata: {
-      product: "battabatta",
+      product: "battarbox",
       revenue_type: parsed.data.mode,
       barter_settlement: "false",
       profile_id: user?.id ?? ""

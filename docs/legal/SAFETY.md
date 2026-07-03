@@ -1,6 +1,6 @@
 # Safety Policy Draft
 
-BattaBatta is adult-only at launch.
+Battarbox is adult-only at launch.
 
 Users should meet in public places, avoid sharing exact addresses until they trust the other party, and report suspicious or unsafe behavior.
 

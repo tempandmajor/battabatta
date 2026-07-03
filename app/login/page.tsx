@@ -4,7 +4,7 @@ import { AuthCard } from "@/components/auth/auth-card";
 import { LoginForm } from "@/components/auth/login-form";
 import { getSessionUser } from "@/lib/auth";
 
-export const metadata: Metadata = { title: "Sign in · BattaBatta" };
+export const metadata: Metadata = { title: "Sign in · Battarbox" };
 
 export default async function LoginPage({
   searchParams

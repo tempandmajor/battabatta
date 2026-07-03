@@ -1,6 +1,6 @@
 ---
 name: Bug report
-about: Report a reproducible problem in BattaBatta
+about: Report a reproducible problem in Battarbox
 title: "[Bug]: "
 labels: bug
 assignees: ""

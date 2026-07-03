@@ -5,7 +5,7 @@ import { deletePost } from "@/lib/actions/posts";
 import { requireOnboardedUser } from "@/lib/auth";
 import { ghostButtonClass } from "@/components/ui";
 
-export const metadata: Metadata = { title: "Edit post · BattaBatta" };
+export const metadata: Metadata = { title: "Edit post · Battarbox" };
 
 export default async function EditPostPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;

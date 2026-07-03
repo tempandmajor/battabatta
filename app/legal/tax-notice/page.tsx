@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 
-export const metadata: Metadata = { title: "Tax Notice · BattaBatta" };
+export const metadata: Metadata = { title: "Tax Notice · Battarbox" };
 
 export default function TaxNoticePage() {
   return (
@@ -15,11 +15,11 @@ export default function TaxNoticePage() {
         determining, reporting, and paying any taxes that apply to your exchanges.
       </p>
 
-      <h2>What BattaBatta does and does not do</h2>
+      <h2>What Battarbox does and does not do</h2>
       <ul>
-        <li>BattaBatta does not record whether exchanges were completed, does not assign values to goods or services, and does not maintain exchange ledgers or credits.</li>
-        <li>Because BattaBatta is not a barter exchange operator that settles transactions, it does not issue tax forms (such as US Form 1099-B) for member trades. This position should be confirmed by OMS2's tax counsel.</li>
-        <li>BattaBatta does not provide tax advice. Consult a qualified tax professional about your situation.</li>
+        <li>Battarbox does not record whether exchanges were completed, does not assign values to goods or services, and does not maintain exchange ledgers or credits.</li>
+        <li>Because Battarbox is not a barter exchange operator that settles transactions, it does not issue tax forms (such as US Form 1099-B) for member trades. This position should be confirmed by OMS2's tax counsel.</li>
+        <li>Battarbox does not provide tax advice. Consult a qualified tax professional about your situation.</li>
       </ul>
 
       <h2>Platform donations</h2>

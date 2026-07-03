@@ -1,6 +1,6 @@
 # Tax Notice Draft
 
-BattaBatta does not provide tax advice.
+Battarbox does not provide tax advice.
 
 Barter may have tax consequences depending on the user, jurisdiction, goods, services, and facts. Users are responsible for their own tax obligations.
 

@@ -7,18 +7,18 @@ const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000";
 
 export const metadata: Metadata = {
   title: {
-    default: "BattaBatta — barter discovery",
+    default: "Battarbox — barter discovery",
     template: "%s"
   },
   description:
     "Free-first barter discovery for local and online exchanges. Publish what you can offer, find what you need, and negotiate non-binding trades.",
   metadataBase: new URL(siteUrl),
   openGraph: {
-    title: "BattaBatta — barter discovery",
+    title: "Battarbox — barter discovery",
     description:
       "Free-first barter discovery for local and online exchanges. Nonprofit-owned, no user-to-user payments.",
     url: siteUrl,
-    siteName: "BattaBatta",
+    siteName: "Battarbox",
     type: "website"
   },
   robots: { index: true, follow: true }

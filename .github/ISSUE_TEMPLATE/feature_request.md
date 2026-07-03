@@ -1,6 +1,6 @@
 ---
 name: Feature request
-about: Propose an improvement aligned with BattaBatta's mission
+about: Propose an improvement aligned with Battarbox's mission
 title: "[Feature]: "
 labels: enhancement
 assignees: ""

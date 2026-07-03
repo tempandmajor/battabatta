@@ -30,7 +30,7 @@ export function OnboardingForm({
         />
       </Field>
 
-      <Field label="Handle" htmlFor="handle" hint="Your public profile URL: battabatta.org/profiles/your-handle">
+      <Field label="Handle" htmlFor="handle" hint="Your public profile URL: battarbox.com/profiles/your-handle">
         <input
           id="handle"
           name="handle"
@@ -80,7 +80,7 @@ export function OnboardingForm({
             <Link href="/legal/privacy" target="_blank" className="font-semibold underline">
               Privacy Policy
             </Link>
-            , and I understand offers on BattaBatta are non-binding and never settled through the platform.
+            , and I understand offers on Battarbox are non-binding and never settled through the platform.
           </span>
         </label>
       </div>

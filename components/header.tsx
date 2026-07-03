@@ -26,7 +26,7 @@ export async function Header() {
           <span className="flex size-7 items-center justify-center rounded-[7px] bg-ink text-[13px] font-bold text-white">
             BB
           </span>
-          <span className="hidden text-base font-bold tracking-[-0.02em] sm:inline">BattaBatta</span>
+          <span className="hidden text-base font-bold tracking-[-0.02em] sm:inline">Battarbox</span>
         </Link>
 
         <nav aria-label="Primary" className="flex items-center gap-1 overflow-x-auto">

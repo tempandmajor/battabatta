@@ -40,7 +40,7 @@ export function LoginForm({ next, initialError }: { next: string; initialError?:
           </Link>
         </p>
         <p>
-          New to BattaBatta?{" "}
+          New to Battarbox?{" "}
           <Link href="/register" className="font-medium text-ink hover:underline">
             Create an account
           </Link>

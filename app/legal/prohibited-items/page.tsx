@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 
-export const metadata: Metadata = { title: "Prohibited Items & Services · BattaBatta" };
+export const metadata: Metadata = { title: "Prohibited Items & Services · Battarbox" };
 
 export default function ProhibitedItemsPage() {
   return (
@@ -9,7 +9,7 @@ export default function ProhibitedItemsPage() {
       <p className="updated">Version 2026-07-02-draft · Last updated July 2, 2026</p>
 
       <p>
-        These may not be offered, sought, or exchanged through BattaBatta, regardless of local legality. Posts are
+        These may not be offered, sought, or exchanged through Battarbox, regardless of local legality. Posts are
         removed and repeat violations lead to account suspension. When in doubt, do not list it.
       </p>
 
@@ -24,7 +24,7 @@ export default function ProhibitedItemsPage() {
         <li>Sexual services, sexually explicit material, and any adult content involving exchange.</li>
         <li>Human remains, bodily fluids, and organs.</li>
         <li>Identity documents, government IDs, financial instruments, gift cards, and cryptocurrency.</li>
-        <li>Anything requiring a transfer of money between members — BattaBatta is barter-only.</li>
+        <li>Anything requiring a transfer of money between members — Battarbox is barter-only.</li>
       </ul>
 
       <h2>Prohibited services</h2>

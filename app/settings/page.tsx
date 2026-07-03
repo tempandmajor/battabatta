@@ -6,7 +6,7 @@ import { unblockProfile } from "@/lib/actions/social";
 import { requireOnboardedUser } from "@/lib/auth";
 import { ghostButtonClass } from "@/components/ui";
 
-export const metadata: Metadata = { title: "Settings · BattaBatta" };
+export const metadata: Metadata = { title: "Settings · Battarbox" };
 
 export default async function SettingsPage({
   searchParams

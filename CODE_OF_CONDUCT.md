@@ -1,6 +1,6 @@
 # Code of Conduct
 
-BattaBatta follows a contributor covenant-style standard: be respectful, inclusive, direct, and focused on the work.
+Battarbox follows a contributor covenant-style standard: be respectful, inclusive, direct, and focused on the work.
 
 Unacceptable behavior includes harassment, threats, discriminatory language, doxxing, sexualized attention, spam, and abuse of moderation or reporting systems.
 

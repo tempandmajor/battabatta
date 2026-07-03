@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 
-export const metadata: Metadata = { title: "Copyright & DMCA · BattaBatta" };
+export const metadata: Metadata = { title: "Copyright & DMCA · Battarbox" };
 
 export default function DmcaPage() {
   return (
@@ -10,12 +10,12 @@ export default function DmcaPage() {
 
       <h2>Reporting infringement</h2>
       <p>
-        If you believe content on BattaBatta infringes your copyright, send a takedown notice to OMS2's designated
+        If you believe content on Battarbox infringes your copyright, send a takedown notice to OMS2's designated
         agent at the contact address published on the project repository. A valid notice includes:
       </p>
       <ul>
         <li>Identification of the copyrighted work claimed to be infringed.</li>
-        <li>The URL or sufficient description of the infringing material on BattaBatta.</li>
+        <li>The URL or sufficient description of the infringing material on Battarbox.</li>
         <li>Your name, address, email, and (if applicable) authority to act for the rights holder.</li>
         <li>A statement of good-faith belief that the use is not authorized.</li>
         <li>A statement, under penalty of perjury, that the notice is accurate.</li>
@@ -34,7 +34,7 @@ export default function DmcaPage() {
 
       <h2>Trademarks</h2>
       <p>
-        The BattaBatta name, logos, icons, and brand assets are trademarks or reserved brand assets of OMS2 and are
+        The Battarbox name, logos, icons, and brand assets are trademarks or reserved brand assets of OMS2 and are
         not licensed for unrelated products, even though the software itself is MIT licensed. See
         TRADEMARK_POLICY.md in the repository.
       </p>

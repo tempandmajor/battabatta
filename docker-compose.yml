@@ -9,7 +9,7 @@ services:
       - .env.local
     volumes:
       - .:/app
-      - battabatta-node-modules:/app/node_modules
+      - battarbox-node-modules:/app/node_modules
 
 volumes:
-  battabatta-node-modules:
+  battarbox-node-modules:

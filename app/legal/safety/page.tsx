@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 
-export const metadata: Metadata = { title: "Safety Guidelines · BattaBatta" };
+export const metadata: Metadata = { title: "Safety Guidelines · Battarbox" };
 
 export default function SafetyPage() {
   return (
@@ -18,8 +18,8 @@ export default function SafetyPage() {
 
       <h2>Online exchanges</h2>
       <ul>
-        <li>Keep conversations in BattaBatta messages until you are comfortable; our safety tools only work here.</li>
-        <li>Never send money, gift cards, deposits, or “shipping fees.” BattaBatta exchanges never involve payments between members — any payment request is a scam.</li>
+        <li>Keep conversations in Battarbox messages until you are comfortable; our safety tools only work here.</li>
+        <li>Never send money, gift cards, deposits, or “shipping fees.” Battarbox exchanges never involve payments between members — any payment request is a scam.</li>
         <li>Be careful with links and files from people you do not know.</li>
       </ul>
 

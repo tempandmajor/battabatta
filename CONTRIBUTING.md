@@ -1,6 +1,6 @@
 # Contributing
 
-Thanks for contributing to BattaBatta.
+Thanks for contributing to Battarbox.
 
 ## Development Expectations
 

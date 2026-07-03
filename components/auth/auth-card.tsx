@@ -10,7 +10,7 @@ export function AuthCard({ title, subtitle, children }: { title: string; subtitl
             <span className="flex size-7 items-center justify-center rounded-[7px] bg-ink text-[13px] font-bold text-white">
               BB
             </span>
-            <span className="text-base font-bold tracking-[-0.02em]">BattaBatta</span>
+            <span className="text-base font-bold tracking-[-0.02em]">Battarbox</span>
           </Link>
           <h1 className="text-2xl font-bold tracking-[-0.03em]">{title}</h1>
           {subtitle && <p className="mt-2 text-sm leading-6 text-muted">{subtitle}</p>}

@@ -63,7 +63,7 @@ export function OfferForm({
 
       <p className="flex items-start gap-2 text-xs leading-5 text-muted">
         <Shield size={14} className="mt-0.5 shrink-0" aria-hidden />
-        Offers are non-binding. BattaBatta does not process settlement, valuation, escrow, or completion accounting.
+        Offers are non-binding. Battarbox does not process settlement, valuation, escrow, or completion accounting.
       </p>
     </form>
   );
