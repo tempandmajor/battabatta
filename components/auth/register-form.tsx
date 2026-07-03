@@ -25,6 +25,17 @@ export function RegisterForm() {
             className={inputClass}
           />
         </Field>
+        <Field label="Confirm password" htmlFor="confirmPassword">
+          <input
+            id="confirmPassword"
+            name="confirmPassword"
+            type="password"
+            autoComplete="new-password"
+            required
+            minLength={8}
+            className={inputClass}
+          />
+        </Field>
         <FormAlert error={state.error} message={state.message} />
         <button type="submit" disabled={pending} className={`${primaryButtonClass} w-full`}>
           {pending ? "Creating account..." : "Create account"}

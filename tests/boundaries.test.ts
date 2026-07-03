@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { offerActionSchema, offerSchema, onboardingSchema, postSchema } from "@/lib/validation";
+import { offerActionSchema, offerSchema, onboardingSchema, postSchema, registerSchema } from "@/lib/validation";
 
 describe("product safety boundaries", () => {
   it("requires 18+ confirmation and terms acceptance to onboard", () => {
@@ -48,5 +48,17 @@ describe("product safety boundaries", () => {
     expect(
       offerSchema.safeParse({ recipientId, offeredItem: "Portrait commission", requestedItem: "2 photography lessons" }).success
     ).toBe(true);
+  });
+
+  it("requires the sign-up password confirmation to match", () => {
+    const base = { email: "sam@example.com", password: "correct-horse" };
+
+    expect(registerSchema.safeParse({ ...base, confirmPassword: "correct-horse" }).success).toBe(true);
+
+    const mismatch = registerSchema.safeParse({ ...base, confirmPassword: "battery-staple" });
+    expect(mismatch.success).toBe(false);
+    if (!mismatch.success) {
+      expect(mismatch.error.issues[0]?.message).toBe("Passwords do not match");
+    }
   });
 });
