@@ -47,9 +47,13 @@ npm run test        # unit (Vitest)
 npm run test:e2e    # Playwright, requires db:start + db:reset + .env.local
 ```
 
-## Open Source Ownership
+## Open Source
 
-The software is licensed under Apache 2.0. The BattaBatta name, logos, icons, and brand assets are trademarks or reserved brand assets of OMS2 and are not licensed for unrelated products.
+BattaBatta is open-source software licensed under the MIT License. See `LICENSE` for the full license text.
+
+The BattaBatta name, logos, icons, and brand assets are trademarks or reserved brand assets of OMS2 and are not licensed for unrelated products. Forks and modified distributions should use a clearly distinct name and visual identity unless OMS2 grants written permission.
+
+Contributions are welcome under `CONTRIBUTING.md`, `CODE_OF_CONDUCT.md`, `SECURITY.md`, and `GOVERNANCE.md`.
 
 ## Safety Boundaries
 

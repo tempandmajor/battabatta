@@ -35,7 +35,7 @@ export default function DmcaPage() {
       <h2>Trademarks</h2>
       <p>
         The BattaBatta name, logos, icons, and brand assets are trademarks or reserved brand assets of OMS2 and are
-        not licensed for unrelated products, even though the software itself is Apache-2.0 licensed. See
+        not licensed for unrelated products, even though the software itself is MIT licensed. See
         TRADEMARK_POLICY.md in the repository.
       </p>
     </>

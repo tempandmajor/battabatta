@@ -1,6 +1,6 @@
 # Battabatta Trademark Policy
 
-The Apache 2.0 license applies to the software in this repository. It does not grant permission to use the Battabatta name, logo, trade dress, or other OMS2 brand assets for unrelated products, services, organizations, or modified distributions that imply OMS2 endorsement.
+The MIT License applies to the software in this repository. It does not grant permission to use the Battabatta name, logo, trade dress, or other OMS2 brand assets for unrelated products, services, organizations, or modified distributions that imply OMS2 endorsement.
 
 Permitted uses:
 

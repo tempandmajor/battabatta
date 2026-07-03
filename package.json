@@ -1,9 +1,8 @@
 {
   "name": "battabatta",
   "version": "0.1.0",
-  "private": true,
   "description": "Open-source nonprofit barter discovery app owned and maintained by OMS2.",
-  "license": "Apache-2.0",
+  "license": "MIT",
   "scripts": {
     "dev": "next dev",
     "build": "next build",

@@ -6,7 +6,7 @@ OMS2 owns and maintains BattaBatta.
 
 - Protect the free-first nonprofit mission.
 - Review security, privacy, moderation, legal, and payment changes carefully.
-- Keep the project open-source under Apache 2.0.
+- Keep the project open-source under the MIT License.
 - Reserve Battabatta brand assets under the trademark policy.
 
 ## Decision Making
