@@ -75,28 +75,49 @@ export type Database = {
           amount_cents: number
           created_at: string
           currency: string
+          donor_email: string | null
+          donor_name: string | null
           id: string
           profile_id: string | null
           stripe_checkout_session_id: string | null
+          stripe_customer_id: string | null
+          stripe_invoice_id: string | null
           stripe_payment_intent_id: string | null
+          receipt_email_id: string | null
+          receipt_error: string | null
+          receipt_sent_at: string | null
         }
         Insert: {
           amount_cents: number
           created_at?: string
           currency?: string
+          donor_email?: string | null
+          donor_name?: string | null
           id?: string
           profile_id?: string | null
           stripe_checkout_session_id?: string | null
+          stripe_customer_id?: string | null
+          stripe_invoice_id?: string | null
           stripe_payment_intent_id?: string | null
+          receipt_email_id?: string | null
+          receipt_error?: string | null
+          receipt_sent_at?: string | null
         }
         Update: {
           amount_cents?: number
           created_at?: string
           currency?: string
+          donor_email?: string | null
+          donor_name?: string | null
           id?: string
           profile_id?: string | null
           stripe_checkout_session_id?: string | null
+          stripe_customer_id?: string | null
+          stripe_invoice_id?: string | null
           stripe_payment_intent_id?: string | null
+          receipt_email_id?: string | null
+          receipt_error?: string | null
+          receipt_sent_at?: string | null
         }
         Relationships: [
           {
@@ -472,6 +493,11 @@ export type Database = {
           profile_id: string
           region: string | null
           stripe_customer_id: string | null
+          stripe_subscription_id: string | null
+          subscription_cancel_at_period_end: boolean
+          subscription_current_period_end: string | null
+          subscription_last_payment_status: string | null
+          subscription_latest_invoice_id: string | null
           subscription_status: Database["public"]["Enums"]["subscription_status"]
           updated_at: string
         }
@@ -484,6 +510,11 @@ export type Database = {
           profile_id: string
           region?: string | null
           stripe_customer_id?: string | null
+          stripe_subscription_id?: string | null
+          subscription_cancel_at_period_end?: boolean
+          subscription_current_period_end?: string | null
+          subscription_last_payment_status?: string | null
+          subscription_latest_invoice_id?: string | null
           subscription_status?: Database["public"]["Enums"]["subscription_status"]
           updated_at?: string
         }
@@ -496,6 +527,11 @@ export type Database = {
           profile_id?: string
           region?: string | null
           stripe_customer_id?: string | null
+          stripe_subscription_id?: string | null
+          subscription_cancel_at_period_end?: boolean
+          subscription_current_period_end?: string | null
+          subscription_last_payment_status?: string | null
+          subscription_latest_invoice_id?: string | null
           subscription_status?: Database["public"]["Enums"]["subscription_status"]
           updated_at?: string
         }
@@ -521,6 +557,7 @@ export type Database = {
           is_paused: boolean
           location_mode: Database["public"]["Enums"]["location_mode"]
           public_location_label: string | null
+          supporter_since: string | null
           updated_at: string
         }
         Insert: {
@@ -534,6 +571,7 @@ export type Database = {
           is_paused?: boolean
           location_mode?: Database["public"]["Enums"]["location_mode"]
           public_location_label?: string | null
+          supporter_since?: string | null
           updated_at?: string
         }
         Update: {
@@ -547,6 +585,7 @@ export type Database = {
           is_paused?: boolean
           location_mode?: Database["public"]["Enums"]["location_mode"]
           public_location_label?: string | null
+          supporter_since?: string | null
           updated_at?: string
         }
         Relationships: []
@@ -745,6 +784,7 @@ export type Database = {
           owner_avatar_url: string
           owner_display_name: string
           owner_handle: string
+          owner_supporter_since: string | null
           owner_id: string
           title: string
           what_i_can_give: string
@@ -1537,4 +1577,3 @@ export const Constants = {
     },
   },
 } as const
-

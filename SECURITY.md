@@ -1,6 +1,6 @@
 # Security Policy
 
-Report vulnerabilities privately to OMS2 maintainers. Do not open public issues for security-sensitive reports.
+Report vulnerabilities privately to One Million Small Startups Inc. maintainers. Do not open public issues for security-sensitive reports.
 
 Include:
 

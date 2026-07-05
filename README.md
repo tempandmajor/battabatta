@@ -1,8 +1,8 @@
 # Battarbox
 
-Battarbox is an open-source, nonprofit-owned barter discovery app owned and maintained by OMS2.
+Battarbox is a free community barter discovery and messaging platform operated by OMS2.
 
-The product helps adults publish what they can offer, describe what they are seeking, discover local or online opportunities, and negotiate non-binding exchanges. Battarbox does not process user-to-user payments, escrow, settlement, valuation, completion accounting, credits, or exchange ledgers.
+The product helps adults publish listings, discover possible barter opportunities, and discuss non-binding member-to-member arrangements. Battarbox does not process member-to-member payments, escrow, settlement, valuation, completion accounting, credits, stored value, or marketplace payouts.
 
 ## Stack
 
@@ -10,7 +10,7 @@ The product helps adults publish what they can offer, describe what they are see
 - Supabase Auth and PostgreSQL with PostGIS, RLS on every table, and migrations
 - Supabase Storage for profile and post photos
 - Supabase Realtime for live messaging
-- Stripe Checkout and Billing for platform donations/supporter memberships only
+- Stripe Checkout and Billing for optional platform support payments to OMS2 only
 - Resend for transactional emails and friend invites
 - Optional Google AdSense in-feed ads, disabled by default
 - Playwright, Vitest, ESLint, TypeScript checks
@@ -24,7 +24,7 @@ The product helps adults publish what they can offer, describe what they are see
 - Discovery with local/online scope, category and kind filters, distance buckets (PostGIS), and full-text search
 - Saved posts, offers with a validated negotiation state machine, threaded realtime messaging with unread counts
 - Block and report tooling; blocks are enforced in the database, not just the UI
-- Give-what-you-can donations and supporter memberships via Stripe Checkout, with webhook-driven records
+- One-time and $10.99/month platform support payments via Stripe Checkout, with webhook-driven records and receipts
 - Friend invites by email, plus optional clearly labeled in-feed ads
 
 ## Local Development
@@ -39,7 +39,7 @@ Prereqs: Node 22+, Docker (for Supabase), Supabase CLI.
 
 Local emails (confirmations, resets) land in Inbucket at `http://127.0.0.1:56324`. Supabase Studio: `http://127.0.0.1:56323`.
 
-Stripe routes require `STRIPE_SECRET_KEY`, `STRIPE_WEBHOOK_SECRET`, and `STRIPE_SUPPORTER_PRICE_ID`. Use `npm run stripe:listen` to forward local webhooks.
+Stripe routes require `STRIPE_SECRET_KEY`, `STRIPE_WEBHOOK_SECRET`, and `STRIPE_SUPPORTER_PRICE_ID`. Configure `STRIPE_SUPPORTER_PRICE_ID` as a recurring USD Price for $10.99/month under a Stripe Product for OMS2 platform support. Use `npm run stripe:listen` to forward local webhooks.
 
 Invite emails require `RESEND_API_KEY`. AdSense placements require `NEXT_PUBLIC_ADS_ENABLED=true`,
 `NEXT_PUBLIC_ADSENSE_CLIENT_ID`, and `NEXT_PUBLIC_ADSENSE_IN_FEED_SLOT_ID`; keep ads disabled until OMS2/legal/privacy
@@ -69,10 +69,10 @@ Contributions are welcome under `CONTRIBUTING.md`, `CODE_OF_CONDUCT.md`, `SECURI
 - Public location is approximate only: exact coordinates are stored privately, excluded from client-readable queries, and surfaced solely as bucketed distances ("1-5 mi") computed server-side.
 - Offers are non-binding negotiation records with a validated state machine (pending → interested/countered/declined/withdrawn/closed). No settlement, valuation, or completion states exist.
 - Availability limits decrement only when an offer is marked interested, and manual approval is the default.
-- Payments support the platform only; the Stripe billing portal is only ever opened for the authenticated member's own customer record.
+- Support payments go to OMS2 for platform operations only; the Stripe billing portal is only ever opened for the authenticated member's own customer record.
 - Ads, when enabled, are clearly labeled `Advertisements` in-feed placements and never buy ranking for member posts.
 - AI features are deferred until core moderation, privacy, and legal controls are stable.
 
 ## Compliance Notice
 
-The in-app legal pages (`/legal/*`) are drafts published for transparency and carry a "pending counsel review" banner. OMS2 should obtain legal, tax, privacy, nonprofit, and Stripe review before unrestricted public usage.
+The in-app legal pages (`/legal/*`) state: "Last reviewed July 2026. These policies may be updated as Battarbox grows." Review payment, advertising, tax, privacy, and safety changes carefully before launch.

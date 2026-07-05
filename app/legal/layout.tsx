@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { nonprofit } from "@/lib/nonprofit";
 
 const legalNav = [
   { href: "/legal/terms", label: "Terms of Use" },
@@ -16,8 +17,7 @@ export default function LegalLayout({ children }: { children: React.ReactNode })
         role="note"
         className="mb-8 rounded-xl border border-amber-300 bg-amber-50 px-4 py-3 text-[13px] font-medium leading-6 text-amber-900"
       >
-        Draft — pending counsel review. These documents are implementation drafts published for transparency. OMS2
-        will obtain legal, tax, privacy, and nonprofit review before unrestricted public usage.
+        {nonprofit.policyReviewedText}
       </p>
       <div className="grid gap-10 lg:grid-cols-[220px_1fr]">
         <nav aria-label="Legal documents" className="flex flex-row flex-wrap gap-1 lg:flex-col">

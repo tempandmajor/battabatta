@@ -13,7 +13,7 @@ export default async function SavedPostsPage() {
   const { data: saved } = await supabase
     .from("saved_posts")
     .select(
-      "post_id, posts (id, owner_id, kind, category, title, body, what_i_can_give, approximate_location_label, approval_policy, availability_total, availability_remaining, availability_unit, created_at, profiles:owner_id (display_name, handle, avatar_url), post_photos (path, position))"
+      "post_id, posts (id, owner_id, kind, category, title, body, what_i_can_give, approximate_location_label, approval_policy, availability_total, availability_remaining, availability_unit, created_at, profiles:owner_id (display_name, handle, avatar_url, supporter_since), post_photos (path, position))"
     )
     .eq("profile_id", user.id)
     .order("created_at", { ascending: false });
@@ -21,7 +21,7 @@ export default async function SavedPostsPage() {
   const posts: PostCardData[] = (saved ?? []).flatMap((row) => {
     const post = row.posts as unknown as
       | (Omit<PostCardData, "owner_display_name" | "owner_handle" | "owner_avatar_url" | "cover_photo_path"> & {
-          profiles: { display_name: string; handle: string | null; avatar_url: string | null } | null;
+          profiles: { display_name: string; handle: string | null; avatar_url: string | null; supporter_since: string | null } | null;
           post_photos: Array<{ path: string; position: number }> | null;
         })
       | null;
@@ -34,6 +34,7 @@ export default async function SavedPostsPage() {
         owner_display_name: profiles?.display_name ?? "Member",
         owner_handle: profiles?.handle ?? null,
         owner_avatar_url: profiles?.avatar_url ?? null,
+        owner_supporter_since: profiles?.supporter_since ?? null,
         cover_photo_path: cover?.path ?? null
       }
     ];

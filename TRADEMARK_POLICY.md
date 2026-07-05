@@ -1,6 +1,6 @@
 # Battarbox Trademark Policy
 
-The MIT License applies to the software in this repository. It does not grant permission to use the Battarbox name, logo, trade dress, or other OMS2 brand assets for unrelated products, services, organizations, or modified distributions that imply OMS2 endorsement.
+The MIT License applies to the software in this repository. It does not grant permission to use the Battarbox name, logo, trade dress, or other One Million Small Startups Inc. brand assets for unrelated products, services, organizations, or modified distributions that imply One Million Small Startups Inc. endorsement.
 
 Permitted uses:
 
@@ -9,9 +9,9 @@ Permitted uses:
 - Describing compatibility with Battarbox.
 - Forking the software when the fork uses a clearly distinct name and visual identity.
 
-Restricted uses require written permission from OMS2:
+Restricted uses require written permission from One Million Small Startups Inc.:
 
 - Running a public service under the Battarbox name.
 - Using the Battarbox logo or brand assets outside this project.
-- Suggesting OMS2 sponsorship, endorsement, or official maintainer status.
+- Suggesting One Million Small Startups Inc. sponsorship, endorsement, or official maintainer status.
 - Registering confusingly similar names, domains, social handles, or app listings.

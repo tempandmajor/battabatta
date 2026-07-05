@@ -21,7 +21,7 @@ export default async function ProfilePage({ params }: { params: Promise<{ handle
 
   const { data: profile } = await supabase
     .from("profiles")
-    .select("id, display_name, handle, bio, public_location_label, location_mode, is_paused, avatar_url")
+    .select("id, display_name, handle, bio, public_location_label, location_mode, is_paused, avatar_url, supporter_since")
     .eq("handle", handle)
     .maybeSingle();
   if (!profile) notFound();
@@ -70,6 +70,7 @@ export default async function ProfilePage({ params }: { params: Promise<{ handle
                     Not offering at the moment
                   </span>
                 )}
+                {profile.supporter_since && <Badge tone="outline">Supporter</Badge>}
               </div>
               <p className="flex flex-wrap items-center gap-2 text-[13px] text-muted">
                 {profile.public_location_label && (

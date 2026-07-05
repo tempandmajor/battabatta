@@ -18,14 +18,14 @@ Help adults discover local or online non-binding barter opportunities while prot
 - Message inside offer threads.
 - Block and report users.
 - Invite friends by email.
-- Donate or become a supporter through Stripe Checkout.
+- Make optional one-time or recurring platform support payments to OMS2 through Stripe Checkout.
 - Show clearly labeled, conservative in-feed ads when enabled.
 
 ## Non-Goals
 
 - User-to-user payments.
 - Escrow or settlement.
-- Credits or balances.
+- Credits, stored value, wallets, tokens, or balances.
 - Completed-exchange accounting.
 - Tax reporting automation for barter.
 - Commercial seller marketplace behavior.

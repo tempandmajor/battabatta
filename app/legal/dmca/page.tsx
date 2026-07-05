@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { nonprofit } from "@/lib/nonprofit";
 
 export const metadata: Metadata = { title: "Copyright & DMCA · Battarbox" };
 
@@ -6,12 +7,12 @@ export default function DmcaPage() {
   return (
     <>
       <h1>Copyright &amp; DMCA Policy</h1>
-      <p className="updated">Version 2026-07-02-draft · Last updated July 2, 2026</p>
+      <p className="updated">{nonprofit.policyReviewedText}</p>
 
       <h2>Reporting infringement</h2>
       <p>
-        If you believe content on Battarbox infringes your copyright, send a takedown notice to OMS2's designated
-        agent at the contact address published on the project repository. A valid notice includes:
+        If you believe content on Battarbox infringes your copyright, contact {nonprofit.supportEmail}. A valid notice
+        includes:
       </p>
       <ul>
         <li>Identification of the copyrighted work claimed to be infringed.</li>
@@ -34,8 +35,8 @@ export default function DmcaPage() {
 
       <h2>Trademarks</h2>
       <p>
-        The Battarbox name, logos, icons, and brand assets are trademarks or reserved brand assets of OMS2 and are
-        not licensed for unrelated products, even though the software itself is MIT licensed. See
+        The Battarbox name, logos, icons, and brand assets are trademarks or reserved brand assets of{" "}
+        {nonprofit.publicName} and are not licensed for unrelated products, even though the software itself is MIT licensed. See
         TRADEMARK_POLICY.md in the repository.
       </p>
     </>

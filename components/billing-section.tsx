@@ -3,6 +3,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import { secondaryButtonClass } from "@/components/ui";
+import { nonprofit } from "@/lib/nonprofit";
 
 export function BillingSection({
   subscriptionStatus,
@@ -30,12 +31,18 @@ export function BillingSection({
 
   return (
     <section className="mt-12 space-y-3">
-      <h2 className="text-[13px] font-semibold uppercase tracking-[0.08em] text-[#8a8a8a]">Supporter membership</h2>
+      <h2 className="text-[13px] font-semibold uppercase tracking-[0.08em] text-[#8a8a8a]">
+        Recurring platform support
+      </h2>
       {subscriptionStatus === "active" || subscriptionStatus === "trialing" ? (
         <div className="space-y-3 rounded-xl border border-line p-4">
           <p className="text-[13px] leading-6 text-ink">
-            <span className="font-semibold">You are a supporter — thank you!</span> Your membership funds hosting,
-            moderation, and safety work. It never buys placement or settles trades.
+            <span className="font-semibold">Thank you for supporting Battarbox operations.</span> Recurring support
+            funds hosting, moderation, accessibility, and safety work through {nonprofit.publicName}. It never buys
+            access, listing priority, ranking preference, matches, or exchange privileges.
+          </p>
+          <p className="rounded-lg bg-mist px-3 py-2 text-xs font-medium leading-5 text-ink">
+            {nonprofit.paymentDisclosure}
           </p>
           <button onClick={openPortal} disabled={pending} className={secondaryButtonClass}>
             {pending ? "Opening..." : "Manage billing"}
@@ -46,10 +53,15 @@ export function BillingSection({
           <p className="text-[13px] leading-6 text-muted">
             Battarbox is free. If it is useful to you, consider{" "}
             <Link href="/support" className="font-semibold text-ink hover:underline">
-              supporting the platform
+              monthly platform support for {nonprofit.supporterAmountLabel}
             </Link>
             .
           </p>
+          {hasStripeCustomer && (
+            <p className="rounded-lg bg-mist px-3 py-2 text-xs font-medium leading-5 text-ink">
+              {nonprofit.paymentDisclosure}
+            </p>
+          )}
           {hasStripeCustomer && (
             <button onClick={openPortal} disabled={pending} className={secondaryButtonClass}>
               {pending ? "Opening..." : "Billing history"}

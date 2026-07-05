@@ -1,6 +1,6 @@
 # AdSense Compliance Checklist
 
-This is an implementation checklist, not legal advice. Verify the current Google AdSense and Google Publisher Policies before enabling ads.
+This is an implementation checklist. Verify the current Google AdSense and Google Publisher Policies before enabling ads.
 
 ## Launch Gates
 

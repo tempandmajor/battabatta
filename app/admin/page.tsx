@@ -79,6 +79,29 @@ type AuditRow = {
   created_at: string;
 };
 
+type DonationRow = {
+  id: string;
+  profile_id: string | null;
+  amount_cents: number;
+  currency: string;
+  donor_email: string | null;
+  donor_name: string | null;
+  receipt_sent_at: string | null;
+  receipt_error: string | null;
+  created_at: string;
+};
+
+type PrivateProfileRow = {
+  profile_id: string;
+  email: string | null;
+  subscription_status: string;
+  stripe_customer_id: string | null;
+  stripe_subscription_id: string | null;
+  subscription_current_period_end: string | null;
+  subscription_cancel_at_period_end: boolean;
+  subscription_last_payment_status: string | null;
+};
+
 function keyById<T extends { id: string }>(rows: T[] | null | undefined): Map<string, T> {
   return new Map((rows ?? []).map((row) => [row.id, row]));
 }
@@ -92,6 +115,13 @@ function reportTone(status: string): "solid" | "outline" | "soft" {
   if (status === "open") return "solid";
   if (status === "reviewing") return "outline";
   return "soft";
+}
+
+function money(amountCents: number, currency: string): string {
+  return new Intl.NumberFormat("en-US", {
+    style: "currency",
+    currency: currency.toUpperCase()
+  }).format(amountCents / 100);
 }
 
 function NoteField({ id }: { id: string }) {
@@ -110,7 +140,17 @@ function NoteField({ id }: { id: string }) {
 export default async function AdminPage() {
   const { admin, user, role } = await requireAdminUser();
 
-  const [{ data: reports }, { data: profiles }, { data: posts }, { data: messages }, { data: offers }, { data: moderation }, { data: audit }] =
+  const [
+    { data: reports },
+    { data: profiles },
+    { data: posts },
+    { data: messages },
+    { data: offers },
+    { data: moderation },
+    { data: audit },
+    { data: donations },
+    { data: subscriptions }
+  ] =
     await Promise.all([
       admin
         .from("reports")
@@ -126,6 +166,19 @@ export default async function AdminPage() {
         .from("moderation_audit_log")
         .select("id, actor_id, action, report_id, target_profile_id, target_post_id, note, created_at")
         .order("created_at", { ascending: false })
+        .limit(25),
+      admin
+        .from("donations")
+        .select("id, profile_id, amount_cents, currency, donor_email, donor_name, receipt_sent_at, receipt_error, created_at")
+        .order("created_at", { ascending: false })
+        .limit(25),
+      admin
+        .from("profile_private")
+        .select(
+          "profile_id, email, subscription_status, stripe_customer_id, stripe_subscription_id, subscription_current_period_end, subscription_cancel_at_period_end, subscription_last_payment_status"
+        )
+        .neq("subscription_status", "none")
+        .order("updated_at", { ascending: false })
         .limit(25)
     ]);
 
@@ -136,6 +189,7 @@ export default async function AdminPage() {
   const offerMap = keyById((offers ?? []) as OfferRow[]);
   const moderationMap = new Map(((moderation ?? []) as ModerationRow[]).map((row) => [row.profile_id, row]));
   const openReports = typedReports.filter((report) => report.status === "open" || report.status === "reviewing");
+  const totalDonations = ((donations ?? []) as DonationRow[]).reduce((total, donation) => total + donation.amount_cents, 0);
 
   return (
     <main className="mx-auto w-full max-w-7xl px-5 py-10 sm:px-8">
@@ -264,6 +318,72 @@ export default async function AdminPage() {
               );
             })
           )}
+        </div>
+      </section>
+
+      <section className="mt-10 grid gap-6 lg:grid-cols-2">
+        <div>
+          <div className="flex flex-wrap items-end justify-between gap-3">
+            <div>
+              <h2 className="text-xl font-bold tracking-[-0.02em]">Contributions</h2>
+              <p className="mt-1 text-[13px] text-muted">
+                {money(totalDonations, "usd")} across the latest {((donations ?? []) as DonationRow[]).length} records
+              </p>
+            </div>
+          </div>
+          <div className="mt-4 overflow-hidden rounded-2xl border border-line bg-white">
+            {((donations ?? []) as DonationRow[]).length === 0 ? (
+              <p className="p-5 text-[13px] text-muted">No Stripe contributions recorded yet.</p>
+            ) : (
+              ((donations ?? []) as DonationRow[]).map((donation) => (
+                <div key={donation.id} className="border-b border-line px-5 py-4 last:border-b-0">
+                  <div className="flex flex-wrap items-center justify-between gap-2">
+                    <p className="text-sm font-semibold">{money(donation.amount_cents, donation.currency)}</p>
+                    <Badge tone={donation.receipt_sent_at ? "soft" : donation.receipt_error ? "solid" : "outline"}>
+                      {donation.receipt_sent_at ? "receipt sent" : donation.receipt_error ? "receipt issue" : "receipt pending"}
+                    </Badge>
+                  </div>
+                  <p className="mt-1 text-xs text-muted">
+                    {donation.donor_name || donation.donor_email || profileLabel(donation.profile_id ? profileMap.get(donation.profile_id) : null)}
+                    {" · "}
+                    {timeAgo(donation.created_at)}
+                  </p>
+                  {donation.receipt_error && (
+                    <p className="mt-2 text-xs font-medium text-red-700">{donation.receipt_error}</p>
+                  )}
+                </div>
+              ))
+            )}
+          </div>
+        </div>
+
+        <div>
+          <h2 className="text-xl font-bold tracking-[-0.02em]">Recurring platform support</h2>
+          <div className="mt-4 overflow-hidden rounded-2xl border border-line bg-white">
+            {((subscriptions ?? []) as PrivateProfileRow[]).length === 0 ? (
+              <p className="p-5 text-[13px] text-muted">No recurring support records yet.</p>
+            ) : (
+              ((subscriptions ?? []) as PrivateProfileRow[]).map((subscription) => (
+                <div key={subscription.profile_id} className="border-b border-line px-5 py-4 last:border-b-0">
+                  <div className="flex flex-wrap items-center justify-between gap-2">
+                    <p className="text-sm font-semibold">{profileLabel(profileMap.get(subscription.profile_id))}</p>
+                    <Badge tone={subscription.subscription_status === "active" ? "outline" : "soft"}>
+                      {subscription.subscription_status}
+                    </Badge>
+                  </div>
+                  <p className="mt-1 text-xs text-muted">
+                    {subscription.email ?? "No email"}
+                    {subscription.subscription_current_period_end
+                      ? ` · renews ${new Date(subscription.subscription_current_period_end).toLocaleDateString("en-US")}`
+                      : ""}
+                  </p>
+                  {subscription.subscription_cancel_at_period_end && (
+                    <p className="mt-2 text-xs font-medium text-red-700">Cancels at period end</p>
+                  )}
+                </div>
+              ))
+            )}
+          </div>
         </div>
       </section>
 

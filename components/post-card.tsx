@@ -24,6 +24,7 @@ export type PostCardData = {
   owner_display_name: string;
   owner_handle: string | null;
   owner_avatar_url?: string | null;
+  owner_supporter_since?: string | null;
   cover_photo_path?: string | null;
 };
 
@@ -101,7 +102,7 @@ export function PostCard({ post, saved, showSave }: { post: PostCardData; saved:
           <span className="leading-tight">
             <span className="block text-[13px] font-medium">{post.owner_display_name}</span>
             <span className="block text-xs text-[#8a8a8a]">
-              @{post.owner_handle} {meta ? `· ${meta}` : ""}
+              @{post.owner_handle} {post.owner_supporter_since ? "· Supporter" : ""} {meta ? `· ${meta}` : ""}
             </span>
           </span>
         </Link>
@@ -115,7 +116,11 @@ export function PostCard({ post, saved, showSave }: { post: PostCardData; saved:
           />
           <div className="leading-tight">
             <p className="text-[13px] font-medium">{post.owner_display_name}</p>
-            <p className="text-xs text-[#8a8a8a]">{meta}</p>
+            <p className="text-xs text-[#8a8a8a]">
+              {post.owner_supporter_since ? "Supporter" : ""}
+              {post.owner_supporter_since && meta ? " · " : ""}
+              {meta}
+            </p>
           </div>
         </div>
       )}

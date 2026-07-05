@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { nonprofit } from "@/lib/nonprofit";
 
 export const metadata: Metadata = { title: "Privacy Policy · Battarbox" };
 
@@ -6,7 +7,7 @@ export default function PrivacyPage() {
   return (
     <>
       <h1>Privacy Policy</h1>
-      <p className="updated">Version 2026-07-02-draft · Last updated July 2, 2026</p>
+      <p className="updated">{nonprofit.policyReviewedText}</p>
 
       <h2>1. What we collect</h2>
       <ul>
@@ -27,8 +28,10 @@ export default function PrivacyPage() {
           consents (with document versions).
         </li>
         <li>
-          <strong>Payments:</strong> if you donate or subscribe, Stripe processes your payment. We store only your
-          Stripe customer reference, subscription status, and donation amounts — never card numbers.
+          <strong>Support payments:</strong> if you make a one-time or recurring platform support payment, Stripe
+          processes your payment for {nonprofit.publicName}. We store Stripe customer, recurring support, invoice,
+          receipt, supporter contact, and support payment amount records needed for support, accounting, and
+          acknowledgments — never card numbers.
         </li>
         <li>
           <strong>Invites:</strong> if you invite a friend, we store the invitee email address, invite status, and
@@ -42,7 +45,7 @@ export default function PrivacyPage() {
 
       <h2>2. What we do with it</h2>
       <p>
-        We use your data to run barter discovery (matching, distance filters, search), messaging, safety features
+        We use your data to run barter discovery (distance filters, search), messaging, safety features
         (blocks, reports, moderation), invites, platform support payments, and clearly labeled advertising placements
         when enabled. We do not sell personal data or use your content to train AI models.
       </p>
@@ -58,8 +61,8 @@ export default function PrivacyPage() {
           in the thread, enforced by database row-level security.
         </li>
         <li>
-          <strong>Only you:</strong> precise coordinates, email, saved posts, block list, donation history, and legal
-          consents.
+          <strong>Only you:</strong> precise coordinates, email, saved posts, block list, support payment history, and
+          legal consents.
         </li>
         <li>
           <strong>Moderators:</strong> reports and reported content, for review.
@@ -100,7 +103,7 @@ export default function PrivacyPage() {
       <p>
         You can view and edit your profile in Settings, export your content by request, and delete your account
         yourself. Depending on your jurisdiction you may have additional rights (access, correction, portability,
-        erasure); contact OMS2 to exercise them.
+        erasure); contact {nonprofit.supportEmail} to exercise them.
       </p>
 
       <h2>8. Security</h2>
@@ -116,7 +119,7 @@ export default function PrivacyPage() {
       <h2>10. Changes and contact</h2>
       <p>
         Material changes to this policy will be announced in-app and require renewed acceptance. Questions: contact
-        OMS2 at the address published on the project repository.
+        {nonprofit.supportEmail}.
       </p>
     </>
   );

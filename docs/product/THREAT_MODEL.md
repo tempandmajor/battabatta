@@ -6,7 +6,7 @@
 - Exact coordinates and private location metadata.
 - Offer threads and messages.
 - Reports and moderation cases.
-- Stripe customer, donation, and subscription references.
+- Stripe customer, platform support payment, and recurring support references.
 
 ## Primary Risks
 
@@ -14,7 +14,7 @@
 - RLS bypass exposing private profiles or messages.
 - Blocked users sending offers or messages.
 - Stripe webhook spoofing.
-- Confusing platform donations with payment for barter.
+- Confusing platform support payments with payment for barter.
 - Prohibited items or unsafe services.
 - Abuse of reporting, messaging, or search.
 
@@ -23,6 +23,6 @@
 - RLS on every application table.
 - Approximate public location labels and distance buckets.
 - Server-side webhook signature verification and idempotent event storage.
-- No Stripe Connect, escrow, credits, settlement, or exchange completion states.
+- No Stripe Connect, escrow, credits, stored value, settlement, marketplace payouts, or exchange completion states.
 - Rate limits on auth, posts, offers, messages, reports, and search.
 - Moderation queue, audit logs, block enforcement, and takedown workflow.

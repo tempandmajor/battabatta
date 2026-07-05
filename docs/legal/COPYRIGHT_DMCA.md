@@ -1,7 +1,7 @@
-# Copyright And DMCA Draft
+# Copyright And DMCA
+
+Last reviewed July 2026. These policies may be updated as Battarbox grows.
 
 Users may not post content that infringes another party's copyright or intellectual property rights.
 
-OMS2 should designate and publish a DMCA agent before unrestricted public launch if required for the service model.
-
-Reports should include the copyrighted work, allegedly infringing material, contact information, and required legal statements.
+Reports should be sent to support@battarbox.com and include the copyrighted work, allegedly infringing material, contact information, and required legal statements.

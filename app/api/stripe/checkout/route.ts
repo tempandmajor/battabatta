@@ -2,6 +2,7 @@ import { NextResponse, type NextRequest } from "next/server";
 import { getSiteUrl } from "@/lib/utils";
 import { createStripeClient } from "@/lib/stripe";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
+import { nonprofit } from "@/lib/nonprofit";
 import { checkoutSchema } from "@/lib/validation";
 
 // Best-effort per-instance rate limit; enough to blunt abuse of an
@@ -57,11 +58,15 @@ export async function POST(request: NextRequest) {
       .single();
     customerId = privateProfile?.stripe_customer_id ?? undefined;
 
-    // Supporter subscriptions need a durable customer; create one on first use.
+    // Recurring platform support needs a durable customer; create one on first use.
     if (!customerId && !isDonation) {
       const customer = await stripe.customers.create({
         email: privateProfile?.email ?? user.email ?? undefined,
-        metadata: { battarbox_profile_id: user.id }
+        metadata: {
+          battarbox_profile_id: user.id,
+          nonprofit_name: nonprofit.publicName,
+          nonprofit_ein: nonprofit.ein
+        }
       });
       customerId = customer.id;
       await supabase
@@ -82,15 +87,26 @@ export async function POST(request: NextRequest) {
     customer: customerId,
     customer_email: customerId ? undefined : user?.email ?? undefined,
     client_reference_id: user?.id,
+    subscription_data: isDonation
+      ? undefined
+      : {
+          metadata: {
+            product: "battarbox",
+            revenue_type: "supporter",
+            barter_settlement: "false",
+            profile_id: user?.id ?? "",
+            nonprofit_name: nonprofit.publicName,
+            nonprofit_ein: nonprofit.ein
+          }
+        },
     line_items: isDonation
       ? [
           {
             price_data: {
               currency: "usd",
               product_data: {
-                name: "Battarbox give-what-you-can support",
-                description:
-                  "Supports the free, nonprofit-owned Battarbox platform. This is not payment for a barter exchange."
+                name: nonprofit.donationProductName,
+                description: `Supports OMS2's operation of the free Battarbox community listing and messaging platform. This is not payment for a barter exchange, escrow, stored value, listing boost, or payment to another member.`
               },
               unit_amount: parsed.data.amount ?? 1000
             },
@@ -107,7 +123,10 @@ export async function POST(request: NextRequest) {
       product: "battarbox",
       revenue_type: parsed.data.mode,
       barter_settlement: "false",
-      profile_id: user?.id ?? ""
+      profile_id: user?.id ?? "",
+      nonprofit_name: nonprofit.publicName,
+      nonprofit_ein: nonprofit.ein,
+      nonprofit_domain: nonprofit.domain
     }
   });
 

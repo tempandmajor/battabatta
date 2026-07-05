@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { nonprofit } from "@/lib/nonprofit";
 
 export const metadata: Metadata = { title: "Safety Guidelines · Battarbox" };
 
@@ -6,7 +7,7 @@ export default function SafetyPage() {
   return (
     <>
       <h1>Safety Guidelines</h1>
-      <p className="updated">Version 2026-07-02-draft · Last updated July 2, 2026</p>
+      <p className="updated">{nonprofit.policyReviewedText}</p>
 
       <h2>Meeting people</h2>
       <ul>
@@ -26,9 +27,16 @@ export default function SafetyPage() {
       <h2>Goods and services</h2>
       <ul>
         <li>Inspect goods before completing a trade; test electronics; check for recalls.</li>
-        <li>Some services (electrical, gas, medical, childcare, legal advice) require licenses — verify credentials and see <a href="/legal/prohibited-items">Prohibited Items</a>.</li>
+        <li>Some services require licenses, insurance, permits, background checks, or professional credentials — verify them yourself and see <a href="/legal/prohibited-items">Prohibited Items</a>.</li>
         <li>Food exchanges: label ingredients and allergens, and follow local cottage-food rules.</li>
       </ul>
+
+      <h2>Service listings</h2>
+      <p>
+        Battarbox does not verify professional licenses, insurance, permits, credentials, or legal eligibility to
+        provide services. Members are responsible for conducting their own due diligence before participating in any
+        exchange.
+      </p>
 
       <h2>Tools we give you</h2>
       <ul>
@@ -41,7 +49,7 @@ export default function SafetyPage() {
       <h2>Emergencies</h2>
       <p>
         If you are in immediate danger, contact local emergency services first. Then report the account to us so
-        moderators can act.
+        moderators can act. For non-emergency safety questions, contact {nonprofit.supportEmail}.
       </p>
     </>
   );

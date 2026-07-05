@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { SupportHighlights, SupportPanel } from "@/components/support-panel";
 import { getSessionUser } from "@/lib/auth";
+import { nonprofit } from "@/lib/nonprofit";
 
 export const metadata: Metadata = { title: "Support · Battarbox" };
 
@@ -16,13 +17,14 @@ export default async function SupportPage({
     <main className="mx-auto w-full max-w-5xl px-5 py-12 sm:px-8">
       {status === "success" && (
         <p role="status" className="mb-8 rounded-xl border border-ink bg-mist px-4 py-3 text-sm font-semibold">
-          Thank you for supporting Battarbox! Your payment was received by Stripe; a receipt is on its way to your
-          email.
+          Thank you for supporting OMS2's operation of Battarbox. This payment supports platform operations only. It
+          is not payment for a barter exchange, listing boost, escrow service, stored value, or payment to another
+          member.
         </p>
       )}
       {status === "cancelled" && (
         <p role="status" className="mb-8 rounded-xl border border-line bg-white px-4 py-3 text-sm text-muted">
-          Checkout was cancelled — nothing was charged.
+          The Stripe support payment flow was canceled. Nothing was charged.
         </p>
       )}
 
@@ -30,10 +32,23 @@ export default async function SupportPage({
         <div>
           <h1 className="text-4xl font-bold leading-none tracking-[-0.04em]">Keep Battarbox free</h1>
           <p className="mt-4 max-w-2xl text-sm leading-7 text-muted">
-            Give-what-you-can support funds hosting, moderation, accessibility, and safety work. Donations and
-            supporter memberships never buy placement in barter discovery and never pay another user for an exchange.
+            Optional one-time and recurring platform support payments fund hosting, moderation, accessibility, safety,
+            and community operations. They never buy listing boosts, ranking preference, guaranteed matches, exchange
+            privileges, or payments to other members.
           </p>
+          <p className="mt-4 max-w-2xl text-sm leading-7 text-muted">{nonprofit.businessDescription}</p>
           <SupportHighlights />
+          <section className="mt-8 max-w-2xl rounded-2xl border border-line bg-white p-5">
+            <h2 className="text-lg font-bold tracking-[-0.02em]">Refunds and cancellations</h2>
+            <p className="mt-2 text-sm leading-7 text-muted">{nonprofit.refundPolicy}</p>
+            <p className="mt-3 text-sm leading-7 text-muted">
+              Questions about support payments:{" "}
+              <a href={`mailto:${nonprofit.supportEmail}`} className="font-semibold text-ink hover:underline">
+                {nonprofit.supportEmail}
+              </a>
+              .
+            </p>
+          </section>
         </div>
         <SupportPanel isSignedIn={Boolean(user)} />
       </div>
