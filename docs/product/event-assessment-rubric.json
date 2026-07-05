@@ -1,0 +1,312 @@
+{
+  "version": "2026-07-05",
+  "purpose": "Score and remediate event records before publishing or promoting them.",
+  "score_max": 100,
+  "publish_threshold": 70,
+  "categories": [
+    "conference",
+    "concert",
+    "circuit_party",
+    "play",
+    "competition",
+    "festival",
+    "workshop",
+    "market",
+    "fundraiser",
+    "community",
+    "other"
+  ],
+  "credit_roles": [
+    "speaker",
+    "host",
+    "mc",
+    "moderator",
+    "entertainer",
+    "performer",
+    "artist",
+    "dj",
+    "musician",
+    "band",
+    "cast",
+    "director",
+    "playwright",
+    "producer",
+    "judge",
+    "coach",
+    "vendor",
+    "sponsor",
+    "other"
+  ],
+  "score_bands": [
+    {
+      "min": 90,
+      "max": 100,
+      "status": "flagship",
+      "action": "Promote heavily, pursue sponsors and partners, and capture case-study data."
+    },
+    {
+      "min": 80,
+      "max": 89,
+      "status": "strong",
+      "action": "Publish after minor fixes."
+    },
+    {
+      "min": 70,
+      "max": 79,
+      "status": "viable",
+      "action": "Publish only after resolving named weaknesses."
+    },
+    {
+      "min": 55,
+      "max": 69,
+      "status": "needs_rebuild",
+      "action": "Keep internal until concept, logistics, or economics are rebuilt."
+    },
+    {
+      "min": 0,
+      "max": 54,
+      "status": "reject_or_archive",
+      "action": "Reject, archive, or fully rebuild before publication."
+    }
+  ],
+  "criteria": [
+    {
+      "id": "audience_positioning",
+      "label": "Audience and positioning",
+      "weight": 12,
+      "checks": [
+        "Specific attendee persona is named.",
+        "One-sentence attendee promise is clear.",
+        "Differentiation from similar events is evident.",
+        "Demand evidence is realistic."
+      ]
+    },
+    {
+      "id": "program_experience",
+      "label": "Program and experience",
+      "weight": 16,
+      "checks": [
+        "Run-of-show or schedule is concrete.",
+        "Talent, speakers, artists, performers, cast, judges, or hosts are credited by role.",
+        "The event has a clear emotional or experiential arc.",
+        "The program includes memorable or repeatable signature moments."
+      ]
+    },
+    {
+      "id": "operational_readiness",
+      "label": "Operational readiness",
+      "weight": 14,
+      "checks": [
+        "Venue, date, time, timezone, and capacity are present.",
+        "Permits, vendors, staffing, load-in, and production needs are accounted for.",
+        "Crowd flow, weather, cancellation, and contingency plans are credible.",
+        "The event scale matches the venue and staffing plan."
+      ]
+    },
+    {
+      "id": "safety_accessibility",
+      "label": "Safety and accessibility",
+      "weight": 12,
+      "checks": [
+        "Age policy is explicit.",
+        "ADA-aware ticketing, seating, route, restroom, and accommodation details are present.",
+        "Security, medical, emergency communication, and incident-response plans are present.",
+        "Harassment, alcohol, crowding, and transport risks are addressed where relevant."
+      ]
+    },
+    {
+      "id": "business_case",
+      "label": "Business case",
+      "weight": 16,
+      "checks": [
+        "Revenue streams are named.",
+        "Major cost categories are named.",
+        "Break-even attendance or revenue is calculated.",
+        "Sponsor, partner, local economic, or strategic value is defined.",
+        "Conservative, expected, and upside scenarios are considered."
+      ]
+    },
+    {
+      "id": "marketing_community",
+      "label": "Marketing and community",
+      "weight": 10,
+      "checks": [
+        "Marketing channels and conversion path are present.",
+        "Partnerships, creators, local groups, or community channels are mapped.",
+        "Social proof, past results, or comparable demand is included.",
+        "Post-event retention path is defined."
+      ]
+    },
+    {
+      "id": "trust_realism",
+      "label": "Trust and realism",
+      "weight": 8,
+      "checks": [
+        "Title, copy, date, venue, capacity, price, and organizer feel specific and believable.",
+        "No generic filler or placeholder copy remains.",
+        "Claims can be verified or are framed conservatively.",
+        "The event record reads as if a real producer owns it."
+      ]
+    },
+    {
+      "id": "measurement_plan",
+      "label": "Measurement plan",
+      "weight": 6,
+      "checks": [
+        "KPIs are named before launch.",
+        "Attendee satisfaction or NPS collection is planned.",
+        "Sales, attendance, engagement, sponsor, and incident data will be captured as relevant.",
+        "An after-action review is planned."
+      ]
+    },
+    {
+      "id": "sustainability_ethics",
+      "label": "Sustainability and ethics",
+      "weight": 6,
+      "checks": [
+        "Waste, transport, vendor, and neighborhood impact are considered.",
+        "Inclusion and accessibility are not treated as optional.",
+        "Labor, vendor, participant, and contestant treatment is fair.",
+        "Community disruption has a mitigation plan."
+      ]
+    }
+  ],
+  "required_credit_groups_by_category": {
+    "conference": [["speaker"], ["host", "moderator"], ["producer"]],
+    "concert": [["artist", "band", "musician", "dj"], ["producer"]],
+    "circuit_party": [["dj", "artist"], ["host", "mc"], ["entertainer", "performer"], ["producer"]],
+    "play": [["cast"], ["director"], ["producer"]],
+    "competition": [["host", "mc"], ["judge"], ["producer"]],
+    "festival": [["artist", "band", "musician", "performer", "entertainer"], ["host", "mc"], ["producer"]],
+    "workshop": [["speaker", "host"], ["producer"]],
+    "market": [["vendor"], ["host", "producer"]],
+    "fundraiser": [["host", "speaker"], ["producer"]],
+    "community": [["host", "speaker"], ["producer"]],
+    "other": [["host", "producer"]]
+  },
+  "category_specific_checks": {
+    "conference": {
+      "program_terms": ["session", "speaker", "keynote", "panel", "workshop", "networking", "agenda"],
+      "business_terms": ["registration", "sponsor", "exhibitor", "lead", "pipeline", "booth", "badge", "group"],
+      "measurement_terms": ["registration", "attendance", "session", "lead", "sponsor", "nps", "survey"],
+      "guidance": "Conferences need specific sessions, credible speakers, networking design, and sponsor or exhibitor value.",
+      "rewrite_prompt": "Rewrite as a professional conference listing with the attendee persona, concrete agenda, speaker/moderator roster, networking format, venue/date/time, and sponsor or exhibitor value.",
+      "business_case_prompt": "Build the business case around registrations, sponsorship packages, exhibitor/lead value, group sales, venue/production costs, and renewal or pipeline metrics."
+    },
+    "concert": {
+      "program_terms": ["doors", "set", "headliner", "opener", "artist", "dj", "band", "stage"],
+      "business_terms": ["ticket", "vip", "merch", "bar", "sponsor", "artist", "promoter", "settlement"],
+      "measurement_terms": ["ticket", "sell-through", "check-in", "bar", "merch", "incident", "repeat"],
+      "guidance": "Concerts need a real artist bill, set timing, production plan, and ticket or VIP economics.",
+      "rewrite_prompt": "Rewrite as a concert listing with headliner, supporting artists or DJs, set times, genre, venue/date/time, age policy, access details, and production credibility.",
+      "business_case_prompt": "Build the business case around ticket tiers, VIP/table packages, merch, bar share, sponsorship, artist/promoter settlement, production costs, and sell-through targets."
+    },
+    "circuit_party": {
+      "program_terms": ["dj", "host", "dance", "performer", "entertainer", "doors", "afterhours", "sound"],
+      "business_terms": ["ticket", "vip", "table", "bar", "sponsor", "promoter", "presale", "door"],
+      "measurement_terms": ["ticket", "check-in", "bar", "incident", "safety", "repeat", "presale"],
+      "guidance": "Circuit parties need credible DJs/hosts/entertainers, nightlife production, crowd safety, and VIP/bar economics.",
+      "rewrite_prompt": "Rewrite as a nightlife/circuit party listing with DJs, hosts, entertainers, door times, venue flow, age policy, production details, dress or door expectations, and safety/access notes.",
+      "business_case_prompt": "Build the business case around presales, door sales, VIP/tables, bar share, sponsor fit, promoter list size, staffing/security/medical costs, and repeat-party retention."
+    },
+    "play": {
+      "program_terms": ["cast", "director", "playwright", "act", "intermission", "runtime", "rehearsal", "stage"],
+      "business_terms": ["ticket", "occupancy", "group", "rights", "royalty", "donor", "school", "subscription"],
+      "measurement_terms": ["occupancy", "ticket", "review", "audience", "group", "donor", "repeat"],
+      "guidance": "Plays need cast, director, rights or playwright context, production readiness, occupancy targets, and audience development.",
+      "rewrite_prompt": "Rewrite as a theater listing with title, playwright or rights context, director, cast, creative team, runtime, run dates, venue, content advisory, and why this production matters now.",
+      "business_case_prompt": "Build the business case around paid occupancy, ticket tiers, group/school sales, rights or royalty costs, venue/production costs, donor conversion, reviews, and repeat attendance."
+    },
+    "competition": {
+      "program_terms": ["audition", "judge", "round", "vote", "contestant", "prize", "elimination", "final"],
+      "business_terms": ["application", "ticket", "sponsor", "prize", "livestream", "vote", "audience", "content"],
+      "measurement_terms": ["application", "audition", "vote", "viewer", "retention", "engagement", "winner"],
+      "guidance": "Competitions need eligibility, judging, voting or advancement rules, contestant support, prize value, and audience stakes.",
+      "rewrite_prompt": "Rewrite as a competition listing with eligibility, audition or application process, judges, hosts, rounds, voting or advancement rules, prize, contestant support, date/time, and finals stakes.",
+      "business_case_prompt": "Build the business case around applications, ticketed rounds, sponsors, livestream/content value, voting engagement, prize costs, production costs, audience retention, and winner outcomes."
+    },
+    "festival": {
+      "program_terms": ["lineup", "stage", "artist", "vendor", "map", "schedule", "host", "performer"],
+      "business_terms": ["ticket", "sponsor", "vendor", "concession", "merch", "parking", "grant", "tourism"],
+      "measurement_terms": ["attendance", "dwell", "vendor", "spend", "incident", "satisfaction", "repeat"],
+      "guidance": "Festivals need a lineup, site plan, vendor model, sponsor value, safety plan, and local economic rationale.",
+      "rewrite_prompt": "Rewrite as a festival listing with lineup, stage or zone schedule, hosts, performers, vendors, site map, venue/date/time, access details, transport, and weather/safety plan.",
+      "business_case_prompt": "Build the business case around tickets, sponsorship, vendor fees, concessions, merch, parking, grants/tourism partners, site operations, security/medical costs, and local economic impact."
+    },
+    "workshop": {
+      "program_terms": ["instructor", "lesson", "module", "hands-on", "materials", "takeaway"],
+      "business_terms": ["registration", "materials", "instructor", "capacity", "upsell", "membership"],
+      "measurement_terms": ["registration", "completion", "satisfaction", "repeat", "referral"],
+      "guidance": "Workshops need a concrete learning outcome, instructor credibility, materials plan, and small-capacity economics.",
+      "rewrite_prompt": "Rewrite as a workshop listing with instructor, learner level, concrete takeaway, modules or exercises, materials, capacity, venue/date/time, and accessibility details.",
+      "business_case_prompt": "Build the business case around registration price, capacity, instructor fee, materials, venue costs, upsell or membership path, completion, satisfaction, and referral metrics."
+    },
+    "market": {
+      "program_terms": ["vendor", "stall", "booth", "market", "maker", "food", "map"],
+      "business_terms": ["vendor fee", "booth", "sponsor", "concession", "attendance", "sales"],
+      "measurement_terms": ["vendor", "attendance", "sales", "dwell", "satisfaction", "repeat"],
+      "guidance": "Markets need vendor mix, booth economics, foot-traffic strategy, and vendor sales measurement.",
+      "rewrite_prompt": "Rewrite as a market listing with vendor mix, booth/stall layout, featured makers or food, venue/date/time, shopping experience, access details, and community draw.",
+      "business_case_prompt": "Build the business case around booth or vendor fees, sponsor/concession revenue, expected foot traffic, vendor sales, setup/security/cleanup costs, and repeat vendor retention."
+    },
+    "fundraiser": {
+      "program_terms": ["host", "speaker", "donor", "auction", "pledge", "performance", "honoree"],
+      "business_terms": ["donation", "sponsor", "table", "auction", "pledge", "donor", "goal"],
+      "measurement_terms": ["donation", "donor", "pledge", "sponsor", "attendance", "conversion"],
+      "guidance": "Fundraisers need a fundraising goal, donor pathway, sponsor/table model, and post-event donor conversion plan.",
+      "rewrite_prompt": "Rewrite as a fundraiser listing with cause, goal, host, speakers or performers, honoree if any, donor pathway, table/sponsor options, venue/date/time, and emotional call to action.",
+      "business_case_prompt": "Build the business case around donation goal, sponsor/table packages, auction or pledge mechanics, donor acquisition, event costs, conversion, and post-event stewardship."
+    },
+    "community": {
+      "program_terms": ["host", "community", "activity", "workshop", "speaker", "local"],
+      "business_terms": ["grant", "sponsor", "donation", "partner", "vendor", "budget"],
+      "measurement_terms": ["attendance", "satisfaction", "partner", "community", "repeat"],
+      "guidance": "Community events need local relevance, partner ownership, low-risk operations, and community impact measurement.",
+      "rewrite_prompt": "Rewrite as a community event listing with local audience, host organization, activities, partners, venue/date/time, access details, and neighborhood benefit.",
+      "business_case_prompt": "Build the business case around grants, sponsors, partner contributions, vendor or donation revenue, budget control, volunteer/staffing needs, attendance, and community impact."
+    },
+    "other": {
+      "program_terms": ["host", "schedule", "activity", "program"],
+      "business_terms": ["ticket", "sponsor", "partner", "budget", "revenue", "cost"],
+      "measurement_terms": ["attendance", "satisfaction", "revenue", "repeat"],
+      "guidance": "Other events still need a clear program, owner, economics, and measurement plan.",
+      "rewrite_prompt": "Rewrite as a concrete event listing with audience, host, format, venue/date/time, credited participants, access details, and measurable attendee value.",
+      "business_case_prompt": "Build the business case around revenue, costs, break-even, partner value, operational risk, and post-event measurement."
+    }
+  },
+  "required_fields": [
+    "id",
+    "title",
+    "category",
+    "audience",
+    "promise",
+    "start_at",
+    "end_at",
+    "timezone",
+    "venue_name",
+    "city",
+    "organizer",
+    "description",
+    "capacity",
+    "age_policy",
+    "accessibility",
+    "program",
+    "credits_json",
+    "ticketing",
+    "revenue_model",
+    "cost_model",
+    "break_even",
+    "market_demand",
+    "sponsor_or_partner_value",
+    "safety_plan",
+    "marketing_plan",
+    "measurement_plan"
+  ],
+  "remediation_statuses": [
+    "publish",
+    "fix",
+    "rebuild",
+    "archive",
+    "reject"
+  ]
+}
