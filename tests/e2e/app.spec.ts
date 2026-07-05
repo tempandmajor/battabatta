@@ -6,7 +6,8 @@ const PASSWORD = "password123";
 async function login(page: Page, email: string) {
   await page.goto("/login");
   await page.getByLabel("Email").fill(email);
-  await page.getByLabel("Password").fill(PASSWORD);
+  // exact: the show-password toggle's aria-label ("Show password") also substring-matches
+  await page.getByLabel("Password", { exact: true }).fill(PASSWORD);
   await page.getByRole("button", { name: "Sign in" }).click();
   await page.waitForURL("**/");
 }
@@ -16,6 +17,7 @@ test.describe("anonymous visitor", () => {
     await page.goto("/");
     await expect(page.getByRole("heading", { name: "Discover nearby" })).toBeVisible();
     await expect(page.getByText("Weekly surplus produce box")).toBeVisible();
+    await expect(page.getByText("Advertisements")).toHaveCount(0);
     // Paused member (Dev) must not appear in discovery.
     await expect(page.getByText("Python tutoring, 1:1")).toHaveCount(0);
   });
@@ -24,6 +26,14 @@ test.describe("anonymous visitor", () => {
     await page.goto("/?q=produce");
     await expect(page.getByText("Weekly surplus produce box")).toBeVisible();
     await expect(page.getByText("Photography lessons wanted")).toHaveCount(0);
+  });
+
+  test("post cards link directly to the owner's profile", async ({ page }) => {
+    await page.goto("/?q=sourdough");
+    const card = page.locator("article", { hasText: "Sourdough starter + baking lesson" });
+    await card.getByRole("link", { name: /Sam Okafor/i }).click();
+    await page.waitForURL("**/profiles/sam");
+    await expect(page.getByRole("heading", { name: "Sam Okafor" })).toBeVisible();
   });
 
   test("legal pages render with draft banner", async ({ page }) => {
@@ -76,9 +86,15 @@ test.describe("member journey", () => {
     await page.waitForURL("**/messages/**");
 
     await expect(page.getByText("Battarbox does not process settlement")).toBeVisible();
-    await page.getByPlaceholder("Write a message...").fill("Hi Sam! Fresh print for a lively starter?");
-    await page.getByRole("button", { name: "Send", exact: true }).click();
-    await expect(page.getByText("Fresh print for a lively starter?")).toBeVisible();
+    await expect(async () => {
+      const message = page.getByText("Fresh print for a lively starter?");
+      if ((await message.count()) === 0) {
+        await page.getByPlaceholder("Write a message...").fill("Hi Sam! Fresh print for a lively starter?");
+        await page.getByRole("button", { name: "Send", exact: true }).click();
+        await page.waitForTimeout(1000);
+      }
+      await expect(message).toBeVisible({ timeout: 5000 });
+    }).toPass({ timeout: 45_000 });
   });
 
   test("sam sees the offer and responds interested", async ({ page }) => {
@@ -108,11 +124,61 @@ test.describe("member journey", () => {
 
     await page.goto("/?q=linocut");
     const card = page.locator("article", { hasText: "Botanical linocut prints, A4" });
-    await card.getByRole("button", { name: "Save post" }).click();
+    // The save may persist from an earlier suite run, so only click when unsaved.
+    const saveToggle = card.getByRole("button", { name: /Save post|Remove from saved/ });
+    await expect(saveToggle).toBeVisible();
+    if ((await saveToggle.getAttribute("aria-pressed")) !== "true") {
+      await saveToggle.click();
+    }
     await expect(card.getByRole("button", { name: "Remove from saved" })).toBeVisible();
 
     await page.goto("/saved");
     await expect(page.getByText("Botanical linocut prints, A4")).toBeVisible();
+  });
+
+  test("saving from a post detail page adds it to Saved", async ({ page }) => {
+    await login(page, "jordan@example.com");
+
+    await page.goto("/?q=film camera");
+    await page.getByText("Seeking a working film camera").click();
+    await page.waitForURL("**/posts/**");
+
+    // Client-side navigation updates the URL before the page streams in, so
+    // wait for the save toggle to render instead of sampling isVisible().
+    const saveToggle = page.getByRole("button", { name: /^(Save|Saved)$/ });
+    await expect(saveToggle).toBeVisible();
+    if ((await saveToggle.textContent())?.trim() === "Save") {
+      await saveToggle.click();
+      await expect(page.getByRole("button", { name: "Saved" })).toBeVisible();
+    }
+
+    await page.goto("/saved");
+    await expect(page.getByText("Seeking a working film camera")).toBeVisible();
+  });
+
+  test("admin can open the moderation panel", async ({ page }) => {
+    await login(page, "jordan@example.com");
+
+    await page.goto("/admin");
+    await expect(page.getByRole("heading", { name: "Admin" })).toBeVisible();
+    await expect(page.getByRole("heading", { name: "Reports queue" })).toBeVisible();
+    await expect(page.getByRole("heading", { name: "Members" })).toBeVisible();
+  });
+
+  test("non-admins cannot open the moderation panel", async ({ page }) => {
+    await login(page, "sam@example.com");
+
+    await page.goto("/admin");
+    await page.waitForURL("**/");
+    await expect(page.getByRole("heading", { name: "Discover nearby" })).toBeVisible();
+  });
+
+  test("members can open the invite page", async ({ page }) => {
+    await login(page, "sam@example.com");
+
+    await page.goto("/invite");
+    await expect(page.getByRole("heading", { name: "Invite friends" })).toBeVisible();
+    await expect(page.getByRole("button", { name: "Send invite" })).toBeVisible();
   });
 
   test("reporting a post reaches moderators", async ({ page }) => {
@@ -121,7 +187,10 @@ test.describe("member journey", () => {
     await page.goto("/?q=sourdough");
     await page.getByText("Sourdough starter + baking lesson").click();
     await page.waitForURL("**/posts/**");
-    await page.getByRole("button", { name: "Report" }).click();
+    await expect(async () => {
+      await page.getByRole("button", { name: "Report" }).click();
+      await expect(page.getByLabel("What happened?")).toBeVisible({ timeout: 5000 });
+    }).toPass({ timeout: 45_000 });
     await page.getByLabel("What happened?").fill("Test report from e2e suite.");
     await page.getByRole("button", { name: "Submit report" }).click();
     await expect(page.getByText("Report received")).toBeVisible();

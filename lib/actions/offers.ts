@@ -2,7 +2,7 @@
 
 import { redirect } from "next/navigation";
 import { revalidatePath } from "next/cache";
-import { requireOnboardedUser } from "@/lib/auth";
+import { isProfileSuspended, requireOnboardedUser } from "@/lib/auth";
 import { messageSchema, offerActionSchema, offerSchema } from "@/lib/validation";
 import type { FormState } from "@/lib/actions/auth";
 
@@ -22,6 +22,9 @@ export async function createOffer(_prev: FormState, formData: FormData): Promise
   }
   if (parsed.data.recipientId === user.id) {
     return { error: "You cannot make an offer to yourself" };
+  }
+  if (await isProfileSuspended(parsed.data.recipientId)) {
+    return { error: "This member is unavailable." };
   }
 
   let requiresApproval = true;

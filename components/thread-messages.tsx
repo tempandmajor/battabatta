@@ -1,6 +1,6 @@
 "use client";
 
-import { useActionState, useEffect, useOptimistic, useRef, useState } from "react";
+import { useActionState, useEffect, useRef, useState } from "react";
 import { createSupabaseBrowserClient } from "@/lib/supabase/client";
 import { markThreadRead, sendMessage } from "@/lib/actions/offers";
 import type { FormState } from "@/lib/actions/auth";
@@ -37,12 +37,7 @@ export function ThreadMessages({
 }) {
   const [messages, setMessages] = useState<ThreadMessage[]>(initialMessages);
   const [state, formAction, pending] = useActionState<FormState, FormData>(sendMessage, {});
-  // useOptimistic renders during the in-flight action; a plain setState inside a
-  // form action would be held until the action settles.
-  const [visibleMessages, addOptimisticMessage] = useOptimistic(
-    messages,
-    (current, message: ThreadMessage) => [...current, message]
-  );
+  const visibleMessages = messages;
   const scrollRef = useRef<HTMLDivElement>(null);
   const formRef = useRef<HTMLFormElement>(null);
 
@@ -107,15 +102,10 @@ export function ThreadMessages({
 
       <form
         ref={formRef}
-        action={(formData) => {
-          const body = String(formData.get("body") ?? "").trim();
+        action={formAction}
+        onSubmit={(event) => {
+          const body = String(new FormData(event.currentTarget).get("body") ?? "").trim();
           if (body) {
-            addOptimisticMessage({
-              id: `optimistic-${visibleMessages.length}`,
-              sender_id: selfId,
-              body,
-              created_at: new Date().toISOString()
-            });
             // Keep a durable copy so the message stays visible even if the
             // action settles before the refreshed page data arrives.
             setMessages((current) => [
@@ -123,8 +113,7 @@ export function ThreadMessages({
               { id: `optimistic-${current.length}`, sender_id: selfId, body, created_at: new Date().toISOString() }
             ]);
           }
-          formAction(formData);
-          formRef.current?.reset();
+          requestAnimationFrame(() => formRef.current?.reset());
         }}
         className="border-t border-line px-6 py-4"
       >

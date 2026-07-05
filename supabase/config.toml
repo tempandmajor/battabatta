@@ -70,34 +70,34 @@ content_path = "./supabase/templates/reauthentication.html"
 [auth.email.notification.password_changed]
 enabled = true
 subject = "Your Battarbox password was changed"
-content_path = "./supabase/templates/password_changed_notification.html"
+content_path = "./templates/password_changed_notification.html"
 
 [auth.email.notification.email_changed]
 enabled = true
 subject = "Your Battarbox email was changed"
-content_path = "./supabase/templates/email_changed_notification.html"
+content_path = "./templates/email_changed_notification.html"
 
 [auth.email.notification.identity_linked]
 enabled = true
 subject = "A sign-in method was linked to Battarbox"
-content_path = "./supabase/templates/identity_linked_notification.html"
+content_path = "./templates/identity_linked_notification.html"
 
 [auth.email.notification.identity_unlinked]
 enabled = true
 subject = "A sign-in method was removed from Battarbox"
-content_path = "./supabase/templates/identity_unlinked_notification.html"
+content_path = "./templates/identity_unlinked_notification.html"
 
 [auth.email.notification.phone_changed]
 enabled = true
 subject = "Your Battarbox phone number was changed"
-content_path = "./supabase/templates/phone_changed_notification.html"
+content_path = "./templates/phone_changed_notification.html"
 
 [auth.email.notification.mfa_factor_enrolled]
 enabled = true
 subject = "A Battarbox verification method was added"
-content_path = "./supabase/templates/mfa_factor_enrolled_notification.html"
+content_path = "./templates/mfa_factor_enrolled_notification.html"
 
 [auth.email.notification.mfa_factor_unenrolled]
 enabled = true
 subject = "A Battarbox verification method was removed"
-content_path = "./supabase/templates/mfa_factor_unenrolled_notification.html"
+content_path = "./templates/mfa_factor_unenrolled_notification.html"

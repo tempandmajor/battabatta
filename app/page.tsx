@@ -1,6 +1,8 @@
+import { Fragment } from "react";
 import { MapPin } from "lucide-react";
 import { FilterBar, ScopeToggle } from "@/components/filter-bar";
 import { PostCard, type PostCardData } from "@/components/post-card";
+import { InFeedAdCard } from "@/components/in-feed-ad-card";
 import { EmptyState } from "@/components/empty-state";
 import { getSessionUser } from "@/lib/auth";
 
@@ -80,8 +82,13 @@ export default async function DiscoverPage({
         />
       ) : (
         <div className="mt-7 grid gap-5 md:grid-cols-2 xl:grid-cols-3">
-          {results.map((post) => (
-            <PostCard key={post.id} post={post} saved={savedIds.has(post.id)} showSave={Boolean(user)} />
+          {results.map((post, index) => (
+            <Fragment key={post.id}>
+              <PostCard post={post} saved={savedIds.has(post.id)} showSave={Boolean(user)} />
+              {results.length >= 6 && index >= 5 && (index - 5) % 9 === 0 && (
+                <InFeedAdCard key={`ad-${index}`} />
+              )}
+            </Fragment>
           ))}
         </div>
       )}

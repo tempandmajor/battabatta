@@ -4,7 +4,7 @@ import { notFound } from "next/navigation";
 import { ChevronLeft } from "lucide-react";
 import { Avatar, avatarTone } from "@/components/avatar";
 import { OfferForm } from "@/components/offer-form";
-import { requireOnboardedUser } from "@/lib/auth";
+import { isProfileSuspended, requireOnboardedUser } from "@/lib/auth";
 
 export const metadata: Metadata = { title: "New offer · Battarbox" };
 
@@ -24,6 +24,7 @@ export default async function NewOfferPage({
     .eq("handle", to)
     .maybeSingle();
   if (!recipient || recipient.id === user.id) notFound();
+  if (await isProfileSuspended(recipient.id)) notFound();
 
   return (
     <main className="mx-auto w-full max-w-xl px-5 py-10 sm:px-8">

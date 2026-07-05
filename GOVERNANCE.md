@@ -11,4 +11,4 @@ OMS2 owns and maintains Battarbox.
 
 ## Decision Making
 
-Routine technical changes may be approved by maintainers. Changes involving payments, tax posture, user-to-user exchange accounting, minors, location precision, prohibited categories, or public launch policy require OMS2 review and legal/tax review where appropriate.
+Routine technical changes may be approved by maintainers. Changes involving payments, advertising, third-party tracking, tax posture, user-to-user exchange accounting, minors, location precision, prohibited categories, or public launch policy require OMS2 review and legal/tax/privacy review where appropriate.

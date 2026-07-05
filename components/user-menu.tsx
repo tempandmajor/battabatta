@@ -83,6 +83,14 @@ export function UserMenu({
           </Link>
           <Link
             role="menuitem"
+            href="/invite"
+            onClick={() => setOpen(false)}
+            className="block px-4 py-2.5 text-[13px] font-medium text-ink hover:bg-mist"
+          >
+            Invite friends
+          </Link>
+          <Link
+            role="menuitem"
             href="/settings"
             onClick={() => setOpen(false)}
             className="block px-4 py-2.5 text-[13px] font-medium text-ink hover:bg-mist"

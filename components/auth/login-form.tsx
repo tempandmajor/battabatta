@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useActionState } from "react";
 import { login, type FormState } from "@/lib/actions/auth";
 import { Field, FormAlert, inputClass, primaryButtonClass } from "@/components/ui";
+import { PasswordInput } from "@/components/auth/password-input";
 
 export function LoginForm({ next, initialError }: { next: string; initialError?: string }) {
   const [state, formAction, pending] = useActionState<FormState, FormData>(login, {
@@ -18,13 +19,11 @@ export function LoginForm({ next, initialError }: { next: string; initialError?:
           <input id="email" name="email" type="email" autoComplete="email" required className={inputClass} />
         </Field>
         <Field label="Password" htmlFor="password">
-          <input
+          <PasswordInput
             id="password"
             name="password"
-            type="password"
             autoComplete="current-password"
             required
-            className={inputClass}
           />
         </Field>
         <FormAlert error={state.error} message={state.message} />

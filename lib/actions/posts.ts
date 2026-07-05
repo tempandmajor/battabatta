@@ -2,7 +2,7 @@
 
 import { redirect } from "next/navigation";
 import { revalidatePath } from "next/cache";
-import { requireOnboardedUser, requireUser } from "@/lib/auth";
+import { requireOnboardedUser } from "@/lib/auth";
 import { uploadImage } from "@/lib/upload";
 import { postSchema } from "@/lib/validation";
 import type { FormState } from "@/lib/actions/auth";
@@ -154,7 +154,7 @@ export async function deletePost(formData: FormData): Promise<void> {
 }
 
 export async function toggleSavePost(formData: FormData): Promise<void> {
-  const { supabase, user } = await requireUser();
+  const { supabase, user } = await requireOnboardedUser();
   const postId = String(formData.get("postId") ?? "");
   const currentlySaved = formData.get("saved") === "true";
 
@@ -165,4 +165,5 @@ export async function toggleSavePost(formData: FormData): Promise<void> {
   }
   revalidatePath("/");
   revalidatePath("/saved");
+  if (postId) revalidatePath(`/posts/${postId}`);
 }

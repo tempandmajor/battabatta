@@ -6,13 +6,18 @@ import { getSessionUser } from "@/lib/auth";
 
 export const metadata: Metadata = { title: "Create account · Battarbox" };
 
-export default async function RegisterPage() {
+export default async function RegisterPage({
+  searchParams
+}: {
+  searchParams: Promise<{ invite?: string }>;
+}) {
+  const { invite } = await searchParams;
   const { user } = await getSessionUser();
   if (user) redirect("/");
 
   return (
     <AuthCard title="Create your account" subtitle="Free-first barter discovery for local and online exchanges.">
-      <RegisterForm />
+      <RegisterForm inviteToken={invite} />
     </AuthCard>
   );
 }

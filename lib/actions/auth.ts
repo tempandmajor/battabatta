@@ -4,6 +4,8 @@ import type { Route } from "next";
 import { redirect } from "next/navigation";
 import { revalidatePath } from "next/cache";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
+import { createSupabaseAdminClient } from "@/lib/supabase/admin";
+import { hashInviteToken } from "@/lib/invites";
 import { getSiteUrl } from "@/lib/utils";
 import { emailSchema, loginSchema, passwordSchema, registerSchema } from "@/lib/validation";
 
@@ -25,12 +27,28 @@ export async function register(_prev: FormState, formData: FormData): Promise<Fo
   }
 
   const supabase = await createSupabaseServerClient();
-  const { error } = await supabase.auth.signUp({
+  const inviteToken = String(formData.get("invite") ?? "").trim();
+  const { data, error } = await supabase.auth.signUp({
     email: parsed.data.email,
     password: parsed.data.password,
     options: { emailRedirectTo: `${getSiteUrl()}/auth/callback?next=/onboarding` }
   });
   if (error) return { error: error.message };
+
+  if (inviteToken && data.user) {
+    const admin = createSupabaseAdminClient();
+    await admin
+      .from("invites")
+      .update({
+        status: "accepted",
+        accepted_by: data.user.id,
+        accepted_at: new Date().toISOString()
+      })
+      .eq("token_hash", hashInviteToken(inviteToken))
+      .eq("invitee_email", parsed.data.email)
+      .eq("status", "sent")
+      .gt("expires_at", new Date().toISOString());
+  }
 
   return {
     message: "Check your email for a confirmation link to finish creating your account."

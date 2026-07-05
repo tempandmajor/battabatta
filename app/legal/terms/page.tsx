@@ -66,20 +66,27 @@ export default function TermsPage() {
         <a href="/legal/tax-notice">Tax Notice</a>.
       </p>
 
-      <h2>9. Disclaimers</h2>
+      <h2>9. Advertising and invites</h2>
+      <p>
+        Battarbox may show clearly labeled third-party ads or sponsored placements to support the platform. Ads do not
+        create endorsement by OMS2, do not affect barter discovery ranking, and cannot be used to buy placement for a
+        member's post. Members may invite friends by email and must not use invites for spam, harassment, or abuse.
+      </p>
+
+      <h2>10. Disclaimers</h2>
       <p>
         The service is provided “as is” without warranties of any kind. OMS2 does not vet members, verify listings, or
         inspect exchanged goods or services, and is not a party to any exchange. To the maximum extent permitted by
         law, OMS2's total liability for any claim related to the service is limited to USD $100.
       </p>
 
-      <h2>10. Changes and termination</h2>
+      <h2>11. Changes and termination</h2>
       <p>
         We may update these Terms; material changes will be announced in-app and require renewed acceptance. You may
-        stop using the service at any time. Sections 6, 9, and 11 survive account deletion.
+        stop using the service at any time. Sections 6, 10, and 12 survive account deletion.
       </p>
 
-      <h2>11. Governing law and contact</h2>
+      <h2>12. Governing law and contact</h2>
       <p>
         These Terms are governed by the laws of the jurisdiction where OMS2 is organized (to be confirmed by counsel).
         Questions: contact OMS2 at the address published on the project repository.

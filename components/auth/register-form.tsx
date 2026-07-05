@@ -4,36 +4,34 @@ import Link from "next/link";
 import { useActionState } from "react";
 import { register, type FormState } from "@/lib/actions/auth";
 import { Field, FormAlert, inputClass, primaryButtonClass } from "@/components/ui";
+import { PasswordInput } from "@/components/auth/password-input";
 
-export function RegisterForm() {
+export function RegisterForm({ inviteToken }: { inviteToken?: string }) {
   const [state, formAction, pending] = useActionState<FormState, FormData>(register, {});
 
   return (
     <div className="space-y-5">
       <form action={formAction} className="space-y-4">
+        {inviteToken && <input type="hidden" name="invite" value={inviteToken} />}
         <Field label="Email" htmlFor="email">
           <input id="email" name="email" type="email" autoComplete="email" required className={inputClass} />
         </Field>
         <Field label="Password" htmlFor="password" hint="At least 8 characters.">
-          <input
+          <PasswordInput
             id="password"
             name="password"
-            type="password"
             autoComplete="new-password"
             required
             minLength={8}
-            className={inputClass}
           />
         </Field>
         <Field label="Confirm password" htmlFor="confirmPassword">
-          <input
+          <PasswordInput
             id="confirmPassword"
             name="confirmPassword"
-            type="password"
             autoComplete="new-password"
             required
             minLength={8}
-            className={inputClass}
           />
         </Field>
         <FormAlert error={state.error} message={state.message} />

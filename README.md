@@ -11,6 +11,8 @@ The product helps adults publish what they can offer, describe what they are see
 - Supabase Storage for profile and post photos
 - Supabase Realtime for live messaging
 - Stripe Checkout and Billing for platform donations/supporter memberships only
+- Resend for transactional emails and friend invites
+- Optional Google AdSense in-feed ads, disabled by default
 - Playwright, Vitest, ESLint, TypeScript checks
 
 ## Features
@@ -23,6 +25,7 @@ The product helps adults publish what they can offer, describe what they are see
 - Saved posts, offers with a validated negotiation state machine, threaded realtime messaging with unread counts
 - Block and report tooling; blocks are enforced in the database, not just the UI
 - Give-what-you-can donations and supporter memberships via Stripe Checkout, with webhook-driven records
+- Friend invites by email, plus optional clearly labeled in-feed ads
 
 ## Local Development
 
@@ -37,6 +40,11 @@ Prereqs: Node 22+, Docker (for Supabase), Supabase CLI.
 Local emails (confirmations, resets) land in Inbucket at `http://127.0.0.1:56324`. Supabase Studio: `http://127.0.0.1:56323`.
 
 Stripe routes require `STRIPE_SECRET_KEY`, `STRIPE_WEBHOOK_SECRET`, and `STRIPE_SUPPORTER_PRICE_ID`. Use `npm run stripe:listen` to forward local webhooks.
+
+Invite emails require `RESEND_API_KEY`. AdSense placements require `NEXT_PUBLIC_ADS_ENABLED=true`,
+`NEXT_PUBLIC_ADSENSE_CLIENT_ID`, and `NEXT_PUBLIC_ADSENSE_IN_FEED_SLOT_ID`; keep ads disabled until OMS2/legal/privacy
+review and AdSense approval are complete. If serving EEA, UK, or Switzerland users, keep ads disabled until a
+Google-certified CMP is live and `NEXT_PUBLIC_ADSENSE_CMP_READY=true`.
 
 ## Checks
 
@@ -62,6 +70,7 @@ Contributions are welcome under `CONTRIBUTING.md`, `CODE_OF_CONDUCT.md`, `SECURI
 - Offers are non-binding negotiation records with a validated state machine (pending → interested/countered/declined/withdrawn/closed). No settlement, valuation, or completion states exist.
 - Availability limits decrement only when an offer is marked interested, and manual approval is the default.
 - Payments support the platform only; the Stripe billing portal is only ever opened for the authenticated member's own customer record.
+- Ads, when enabled, are clearly labeled `Advertisements` in-feed placements and never buy ranking for member posts.
 - AI features are deferred until core moderation, privacy, and legal controls are stable.
 
 ## Compliance Notice

@@ -30,13 +30,21 @@ export default function PrivacyPage() {
           <strong>Payments:</strong> if you donate or subscribe, Stripe processes your payment. We store only your
           Stripe customer reference, subscription status, and donation amounts — never card numbers.
         </li>
+        <li>
+          <strong>Invites:</strong> if you invite a friend, we store the invitee email address, invite status, and
+          timestamps so we can send and manage the invitation.
+        </li>
+        <li>
+          <strong>Advertising data:</strong> if ads are enabled, third-party vendors including Google may use cookies,
+          web beacons, IP addresses, or similar technologies to serve, measure, personalize, and protect ads.
+        </li>
       </ul>
 
       <h2>2. What we do with it</h2>
       <p>
         We use your data to run barter discovery (matching, distance filters, search), messaging, safety features
-        (blocks, reports, moderation), and platform support payments. We do not sell personal data, run third-party
-        advertising, or use your content to train AI models.
+        (blocks, reports, moderation), invites, platform support payments, and clearly labeled advertising placements
+        when enabled. We do not sell personal data or use your content to train AI models.
       </p>
 
       <h2>3. Who can see what</h2>
@@ -60,35 +68,52 @@ export default function PrivacyPage() {
 
       <h2>4. Processors</h2>
       <p>
-        We rely on Supabase (database, authentication, storage) and Stripe (payments). Each processes data under its
-        own terms and safeguards.
+        We rely on Supabase (database, authentication, storage), Stripe (payments), Resend (transactional email), and,
+        when advertising is enabled, Google AdSense (ad serving and measurement). Each processes data under its own
+        terms and safeguards.
       </p>
 
-      <h2>5. Retention and deletion</h2>
+      <h2>5. Ads, cookies, and consent</h2>
+      <p>
+        Ads, when enabled, are labeled and may be served by Google AdSense. Google and its partners may use cookies or
+        other local storage to serve ads, limit repeated ads, measure performance, detect invalid traffic, and
+        personalize ads where allowed. Users in regions requiring consent, including the EEA, UK, and Switzerland, must
+        be given legally required disclosures and choices before personalized ad processing.
+      </p>
+      <p>
+        Third-party vendors, including Google, use cookies to serve ads based on a user's prior visits to Battarbox or
+        other websites. Google's use of advertising cookies enables it and its partners to serve ads based on visits to
+        Battarbox and/or other sites on the Internet. Users may opt out of personalized advertising through Google's
+        Ads Settings. If third-party ad serving is enabled beyond Google, those vendors or ad networks may also place
+        and read cookies or use web beacons, and they will be disclosed where required.
+      </p>
+
+      <h2>6. Retention and deletion</h2>
       <p>
         Deleting your account permanently removes your profile, posts, photos, offers, messages, saves, follows, and
-        blocks through database cascades. Webhook records of payments are retained as required for nonprofit
-        accounting. Backups age out on the infrastructure provider's schedule.
+        blocks through database cascades. Invite records, moderation records, and webhook records of payments may be
+        retained as required for safety, abuse prevention, audit, and nonprofit accounting. Backups age out on the
+        infrastructure provider's schedule.
       </p>
 
-      <h2>6. Your rights</h2>
+      <h2>7. Your rights</h2>
       <p>
         You can view and edit your profile in Settings, export your content by request, and delete your account
         yourself. Depending on your jurisdiction you may have additional rights (access, correction, portability,
         erasure); contact OMS2 to exercise them.
       </p>
 
-      <h2>7. Security</h2>
+      <h2>8. Security</h2>
       <p>
         Every application table is protected by row-level security; precise coordinates are excluded from all
         client-readable queries; payment webhooks are signature-verified; sessions use industry-standard encrypted
         cookies. No system is perfectly secure — report vulnerabilities via SECURITY.md in the project repository.
       </p>
 
-      <h2>8. Children</h2>
+      <h2>9. Children</h2>
       <p>Battarbox is for adults 18+. We do not knowingly collect data from minors and delete such accounts.</p>
 
-      <h2>9. Changes and contact</h2>
+      <h2>10. Changes and contact</h2>
       <p>
         Material changes to this policy will be announced in-app and require renewed acceptance. Questions: contact
         OMS2 at the address published on the project repository.

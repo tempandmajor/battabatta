@@ -17,7 +17,9 @@ Help adults discover local or online non-binding barter opportunities while prot
 - Respond with interested, counter, decline, or withdraw.
 - Message inside offer threads.
 - Block and report users.
+- Invite friends by email.
 - Donate or become a supporter through Stripe Checkout.
+- Show clearly labeled, conservative in-feed ads when enabled.
 
 ## Non-Goals
 
@@ -27,4 +29,5 @@ Help adults discover local or online non-binding barter opportunities while prot
 - Completed-exchange accounting.
 - Tax reporting automation for barter.
 - Commercial seller marketplace behavior.
+- Paid ranking or boosted member posts.
 - AI-required posting.

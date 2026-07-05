@@ -7,7 +7,7 @@ import { EmptyState } from "@/components/empty-state";
 import { ReportDialog } from "@/components/report-dialog";
 import { Badge, ghostButtonClass, primaryButtonClass, secondaryButtonClass } from "@/components/ui";
 import { blockProfile, toggleFollow, unblockProfile } from "@/lib/actions/social";
-import { getSessionUser } from "@/lib/auth";
+import { getSessionUser, isProfileSuspended } from "@/lib/auth";
 import { CATEGORY_LABEL, LOCATION_MODE_LABEL, POST_KIND_LABEL } from "@/lib/format";
 
 export async function generateMetadata({ params }: { params: Promise<{ handle: string }> }): Promise<Metadata> {
@@ -27,6 +27,7 @@ export default async function ProfilePage({ params }: { params: Promise<{ handle
   if (!profile) notFound();
 
   const isSelf = user?.id === profile.id;
+  if (!isSelf && (await isProfileSuspended(profile.id))) notFound();
 
   const [postsResult, interestsResult, followerCount, followingCount, myFollow, myBlock] = await Promise.all([
     supabase
@@ -140,7 +141,7 @@ export default async function ProfilePage({ params }: { params: Promise<{ handle
       ) : (
         <>
           <section className="mt-11">
-            <h2 className="mb-4 text-[13px] font-semibold uppercase tracking-[0.08em] text-[#8a8a8a]">Offering</h2>
+            <h2 className="mb-4 text-[13px] font-semibold uppercase tracking-[0.08em] text-[#8a8a8a]">Posts</h2>
             {posts.length === 0 ? (
               <p className="text-[13px] text-muted">No active posts right now.</p>
             ) : (

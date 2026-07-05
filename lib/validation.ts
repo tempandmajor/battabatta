@@ -107,3 +107,7 @@ export const checkoutSchema = z.object({
   mode: z.enum(["donation", "supporter"]),
   amount: z.number().int().min(100).max(100_000).optional()
 });
+
+export const inviteSchema = z.object({
+  email: emailSchema
+});

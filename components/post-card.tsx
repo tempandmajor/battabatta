@@ -31,15 +31,18 @@ export function PostCard({ post, saved, showSave }: { post: PostCardData; saved:
   const meta = [post.distance_bucket ?? post.approximate_location_label, timeAgo(post.created_at)]
     .filter(Boolean)
     .join(" · ");
+  const profileHref = post.owner_handle ? `/profiles/${post.owner_handle}` : null;
 
   return (
-    <article className="relative flex min-h-[260px] flex-col gap-4 overflow-hidden rounded-2xl border border-line bg-white p-5 transition hover:-translate-y-0.5 hover:border-ink hover:shadow-lift">
+    <article className="flex min-h-[260px] flex-col gap-4 overflow-hidden rounded-2xl border border-line bg-white p-5 transition hover:-translate-y-0.5 hover:border-ink hover:shadow-lift">
       {post.cover_photo_path && (
-        <img
-          src={publicStorageUrl("post-photos", post.cover_photo_path)}
-          alt=""
-          className="-mx-5 -mt-5 h-40 w-[calc(100%+2.5rem)] max-w-none object-cover"
-        />
+        <Link href={`/posts/${post.id}`} aria-label={post.title}>
+          <img
+            src={publicStorageUrl("post-photos", post.cover_photo_path)}
+            alt=""
+            className="-mx-5 -mt-5 h-40 w-[calc(100%+2.5rem)] max-w-none object-cover"
+          />
+        </Link>
       )}
       <div className="flex items-start justify-between gap-3">
         <div className="flex flex-wrap gap-1.5">
@@ -64,7 +67,7 @@ export function PostCard({ post, saved, showSave }: { post: PostCardData; saved:
 
       <div className="space-y-2">
         <h2 className="text-[17px] font-semibold leading-snug tracking-[-0.01em]">
-          <Link href={`/posts/${post.id}`} className="after:absolute after:inset-0 hover:underline">
+          <Link href={`/posts/${post.id}`} className="hover:underline">
             {post.title}
           </Link>
         </h2>
@@ -87,18 +90,35 @@ export function PostCard({ post, saved, showSave }: { post: PostCardData; saved:
         </div>
       )}
 
-      <div className="mt-auto flex items-center gap-2.5 pt-1">
-        <Avatar
-          name={post.owner_display_name}
-          avatarPath={post.owner_avatar_url}
-          tone={avatarTone(post.owner_id)}
-          size="sm"
-        />
-        <div className="leading-tight">
-          <p className="text-[13px] font-medium">{post.owner_display_name}</p>
-          <p className="text-xs text-[#8a8a8a]">{meta}</p>
+      {profileHref ? (
+        <Link href={profileHref as never} className="mt-auto flex w-fit items-center gap-2.5 pt-1 hover:underline">
+          <Avatar
+            name={post.owner_display_name}
+            avatarPath={post.owner_avatar_url}
+            tone={avatarTone(post.owner_id)}
+            size="sm"
+          />
+          <span className="leading-tight">
+            <span className="block text-[13px] font-medium">{post.owner_display_name}</span>
+            <span className="block text-xs text-[#8a8a8a]">
+              @{post.owner_handle} {meta ? `· ${meta}` : ""}
+            </span>
+          </span>
+        </Link>
+      ) : (
+        <div className="mt-auto flex items-center gap-2.5 pt-1">
+          <Avatar
+            name={post.owner_display_name}
+            avatarPath={post.owner_avatar_url}
+            tone={avatarTone(post.owner_id)}
+            size="sm"
+          />
+          <div className="leading-tight">
+            <p className="text-[13px] font-medium">{post.owner_display_name}</p>
+            <p className="text-xs text-[#8a8a8a]">{meta}</p>
+          </div>
         </div>
-      </div>
+      )}
     </article>
   );
 }

@@ -121,6 +121,10 @@ insert into public.follows (follower_id, followee_id) values
   ('00000000-0000-0000-0000-000000000002', '00000000-0000-0000-0000-000000000005')
 on conflict do nothing;
 
+insert into public.admin_roles (profile_id, role, created_by) values
+  ('00000000-0000-0000-0000-000000000001', 'admin', '00000000-0000-0000-0000-000000000001')
+on conflict (profile_id) do update set role = excluded.role;
+
 -- 5. Offers + messages -----------------------------------------------------------
 
 insert into public.offers (id, post_id, requester_id, recipient_id, offered_item, requested_item, timing, note, status, requires_approval)

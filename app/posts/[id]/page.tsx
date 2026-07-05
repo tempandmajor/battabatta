@@ -1,13 +1,14 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { ChevronLeft, MapPin } from "lucide-react";
+import { Bookmark, ChevronLeft, MapPin } from "lucide-react";
 import { Avatar, avatarTone } from "@/components/avatar";
 import { OfferForm } from "@/components/offer-form";
 import { ReportDialog } from "@/components/report-dialog";
 import { ShareButton } from "@/components/share-button";
 import { Badge, secondaryButtonClass } from "@/components/ui";
-import { getSessionUser } from "@/lib/auth";
+import { toggleSavePost } from "@/lib/actions/posts";
+import { getSessionUser, isProfileSuspended } from "@/lib/auth";
 import { CATEGORY_LABEL, LOCATION_MODE_LABEL, POST_KIND_LABEL, timeAgo } from "@/lib/format";
 import { publicStorageUrl } from "@/lib/utils";
 
@@ -57,18 +58,21 @@ export default async function PostPage({ params }: { params: Promise<{ id: strin
     .maybeSingle();
   if (!post) notFound();
 
-  const [{ data: owner }, { data: photos }] = await Promise.all([
+  const [{ data: owner }, { data: photos }, savedResult] = await Promise.all([
     supabase
       .from("profiles")
       .select("id, display_name, handle, bio, public_location_label, is_paused, avatar_url")
       .eq("id", post.owner_id)
       .single(),
-    supabase.from("post_photos").select("id, path").eq("post_id", post.id).order("position")
+    supabase.from("post_photos").select("id, path").eq("post_id", post.id).order("position"),
+    user ? supabase.from("saved_posts").select("post_id").eq("profile_id", user.id).eq("post_id", post.id).maybeSingle() : Promise.resolve({ data: null })
   ]);
   if (!owner) notFound();
 
   const isOwner = user?.id === post.owner_id;
+  if (!isOwner && (await isProfileSuspended(owner.id))) notFound();
   const soldOut = post.availability_total !== null && (post.availability_remaining ?? 0) <= 0;
+  const isSaved = Boolean(savedResult.data);
 
   return (
     <main className="mx-auto w-full max-w-5xl px-5 py-10 sm:px-8">
@@ -139,6 +143,20 @@ export default async function PostPage({ params }: { params: Promise<{ id: strin
               </span>
             </Link>
             <div className="ml-auto flex gap-2">
+              {user && !isOwner && (
+                <form action={toggleSavePost}>
+                  <input type="hidden" name="postId" value={post.id} />
+                  <input type="hidden" name="saved" value={isSaved ? "true" : "false"} />
+                  <button
+                    type="submit"
+                    aria-pressed={isSaved}
+                    className={secondaryButtonClass}
+                  >
+                    <Bookmark size={14} fill={isSaved ? "currentColor" : "none"} className="mr-1.5" aria-hidden />
+                    {isSaved ? "Saved" : "Save"}
+                  </button>
+                </form>
+              )}
               <ShareButton title={post.title} path={`/posts/${post.id}`} />
               {isOwner ? (
                 <Link href={`/posts/${post.id}/edit`} className={secondaryButtonClass}>
