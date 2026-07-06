@@ -10,7 +10,7 @@ import { Badge, secondaryButtonClass } from "@/components/ui";
 import { toggleSavePost } from "@/lib/actions/posts";
 import { getSessionUser, isProfileSuspended } from "@/lib/auth";
 import { CATEGORY_LABEL, LOCATION_MODE_LABEL, POST_KIND_LABEL, timeAgo } from "@/lib/format";
-import { publicStorageUrl } from "@/lib/utils";
+import { getSiteUrl, publicStorageUrl } from "@/lib/utils";
 
 export async function generateMetadata({ params }: { params: Promise<{ id: string }> }): Promise<Metadata> {
   const { id } = await params;
@@ -22,16 +22,31 @@ export async function generateMetadata({ params }: { params: Promise<{ id: strin
     .maybeSingle();
   if (!post) return { title: "Post · Battarbox" };
 
-  const description = post.body.length > 160 ? `${post.body.slice(0, 157)}...` : post.body;
+  const descriptionSource = post.body.replace(/\s+/g, " ").trim();
+  const description = descriptionSource.length > 160 ? `${descriptionSource.slice(0, 157)}...` : descriptionSource;
   const cover = [...(post.post_photos ?? [])].sort((a, b) => a.position - b.position)[0];
-  const images = cover ? [{ url: publicStorageUrl("post-photos", cover.path), alt: post.title }] : undefined;
+  const postUrl = `${getSiteUrl()}/posts/${id}`;
+  const images = cover
+    ? [
+        {
+          url: publicStorageUrl("post-photos", cover.path),
+          width: 1200,
+          height: 630,
+          alt: post.title
+        }
+      ]
+    : undefined;
 
   return {
     title: `${post.title} · Battarbox`,
     description,
+    alternates: {
+      canonical: postUrl
+    },
     openGraph: {
       title: post.title,
       description,
+      url: postUrl,
       type: "article",
       siteName: "Battarbox",
       images

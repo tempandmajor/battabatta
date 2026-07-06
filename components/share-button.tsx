@@ -1,14 +1,13 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { Check, Link2, Share2 } from "lucide-react";
+import { Check, Link2, Mail, MessageCircle, Share2 } from "lucide-react";
 import { ghostButtonClass } from "@/components/ui";
 
 /**
- * Share a post to social media. Uses the native share sheet where available
- * (mobile); otherwise opens a small menu with copy-link and per-network links.
- * The shared page carries OpenGraph tags, so posts with photos render the
- * first photo as the link thumbnail.
+ * Share a post to social media and messaging apps. The shared page carries
+ * Open Graph tags, so posts with photos render the first photo as the link
+ * thumbnail in crawlers that support previews.
  */
 export function ShareButton({ title, path }: { title: string; path: string }) {
   const [open, setOpen] = useState(false);
@@ -61,22 +60,37 @@ export function ShareButton({ title, path }: { title: string; path: string }) {
     }
   }
 
+  const shareText = () => `${title} ${shareUrl()}`;
   const networks = [
     {
       label: "Share on X",
+      icon: Share2,
       href: () =>
         `https://twitter.com/intent/tweet?text=${encodeURIComponent(title)}&url=${encodeURIComponent(shareUrl())}`
     },
     {
+      label: "Share on LinkedIn",
+      icon: Share2,
+      href: () => `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(shareUrl())}`
+    },
+    {
       label: "Share on Facebook",
+      icon: Share2,
       href: () => `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(shareUrl())}`
     },
     {
+      label: "Send by message",
+      icon: MessageCircle,
+      href: () => `sms:?&body=${encodeURIComponent(shareText())}`
+    },
+    {
       label: "Share on WhatsApp",
-      href: () => `https://wa.me/?text=${encodeURIComponent(`${title} ${shareUrl()}`)}`
+      icon: MessageCircle,
+      href: () => `https://wa.me/?text=${encodeURIComponent(shareText())}`
     },
     {
       label: "Share by email",
+      icon: Mail,
       href: () => `mailto:?subject=${encodeURIComponent(title)}&body=${encodeURIComponent(shareUrl())}`
     }
   ];
@@ -101,19 +115,23 @@ export function ShareButton({ title, path }: { title: string; path: string }) {
             {copied ? <Check size={14} aria-hidden /> : <Link2 size={14} aria-hidden />}
             {copied ? "Link copied" : "Copy link"}
           </button>
-          {networks.map((network) => (
-            <a
-              key={network.label}
-              role="menuitem"
-              href={network.href()}
-              target="_blank"
-              rel="noopener noreferrer"
-              onClick={() => setOpen(false)}
-              className="block px-4 py-2.5 text-[13px] font-medium text-ink hover:bg-mist"
-            >
-              {network.label}
-            </a>
-          ))}
+          {networks.map((network) => {
+            const Icon = network.icon;
+            return (
+              <a
+                key={network.label}
+                role="menuitem"
+                href={network.href()}
+                target="_blank"
+                rel="noopener noreferrer"
+                onClick={() => setOpen(false)}
+                className="flex items-center gap-2 px-4 py-2.5 text-[13px] font-medium text-ink hover:bg-mist"
+              >
+                <Icon size={14} aria-hidden />
+                {network.label}
+              </a>
+            );
+          })}
         </div>
       )}
     </div>
