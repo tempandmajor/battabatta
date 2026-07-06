@@ -22,7 +22,7 @@ export function FilterBar({
   kind,
   distance
 }: {
-  scope: "local" | "online";
+  scope: "all" | "local" | "online";
   category: string;
   kind: string;
   distance: number;
@@ -88,19 +88,20 @@ export function FilterBar({
   );
 }
 
-export function ScopeToggle({ scope }: { scope: "local" | "online" }) {
+export function ScopeToggle({ scope }: { scope: "all" | "local" | "online" }) {
   const router = useRouter();
   const searchParams = useSearchParams();
 
-  function setScope(value: "local" | "online") {
+  function setScope(value: "all" | "local" | "online") {
     const params = new URLSearchParams(searchParams.toString());
-    params.set("scope", value);
+    if (value === "all") params.delete("scope");
+    else params.set("scope", value);
     router.replace(`/?${params.toString()}`, { scroll: false });
   }
 
   return (
     <div className="flex rounded-[10px] bg-mist p-1" role="tablist" aria-label="Discovery scope">
-      {(["local", "online"] as const).map((value) => (
+      {(["all", "local", "online"] as const).map((value) => (
         <button
           key={value}
           role="tab"
