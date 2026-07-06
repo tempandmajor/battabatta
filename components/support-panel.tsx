@@ -29,7 +29,7 @@ export function SupportPanel({ isSignedIn }: { isSignedIn: boolean }) {
   }
 
   return (
-    <div className="rounded-2xl border border-line p-5">
+    <div id="donate" className="scroll-mt-24 rounded-2xl border border-line p-5">
       <CircleDollarSign size={20} aria-hidden />
       <h2 className="mt-4 text-xl font-bold tracking-[-0.02em]">Support OMS2</h2>
       <p className="mt-2 text-xs leading-5 text-muted">
@@ -61,7 +61,7 @@ export function SupportPanel({ isSignedIn }: { isSignedIn: boolean }) {
         disabled={pending !== null}
         className="mt-5 w-full rounded-full bg-ink py-3 text-sm font-semibold text-white disabled:opacity-50"
       >
-        {pending === "donation" ? "Opening Stripe..." : "Make a one-time support payment"}
+        {pending === "donation" ? "Opening Stripe..." : "Donate to OMS2"}
       </button>
       <button
         onClick={() => startCheckout("supporter")}

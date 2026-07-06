@@ -36,10 +36,10 @@ test.describe("anonymous visitor", () => {
     await expect(page.getByRole("heading", { name: "Sam Okafor" })).toBeVisible();
   });
 
-  test("legal pages render with draft banner", async ({ page }) => {
+  test("legal pages render with the policy review note", async ({ page }) => {
     for (const path of ["/legal/terms", "/legal/privacy", "/legal/safety", "/legal/prohibited-items", "/legal/dmca", "/legal/tax-notice"]) {
       await page.goto(path);
-      await expect(page.getByText("Draft — pending counsel review")).toBeVisible();
+      await expect(page.getByRole("note")).toContainText("Last reviewed");
     }
   });
 
@@ -51,7 +51,66 @@ test.describe("anonymous visitor", () => {
   test("support page explains payment boundary", async ({ page }) => {
     await page.goto("/support");
     await expect(page.getByRole("heading", { name: "Keep Battarbox free" })).toBeVisible();
-    await expect(page.getByText("never pay another user for an exchange")).toBeVisible();
+    await expect(page.getByText("never buy listing boosts").first()).toBeVisible();
+  });
+});
+
+test.describe("signup journey", () => {
+  // Regression test: profiles used to be created without a handle, so a new
+  // member's profile page 404'd until onboarding completed.
+  test("new member's profile is reachable immediately after signup", async ({ page, request }) => {
+    const stamp = Date.now();
+    const email = `e2e.signup.${stamp}@example.com`;
+    const generatedHandle = `e2e_signup_${stamp}`;
+    const changedHandle = `swap_${stamp}`;
+
+    await page.goto("/register");
+    await page.getByLabel("Email").fill(email);
+    await page.getByLabel("Password", { exact: true }).fill(PASSWORD);
+    await page.getByLabel("Confirm password").fill(PASSWORD);
+    await page.getByRole("button", { name: "Create account" }).click();
+    await expect(page.getByText("Check your email for a confirmation link", { exact: false })).toBeVisible();
+
+    // Pull the confirmation link from the local Mailpit API (supabase [inbucket] service).
+    let confirmUrl = "";
+    await expect(async () => {
+      const search = await request.get(
+        `http://127.0.0.1:56324/api/v1/search?query=${encodeURIComponent(`to:"${email}"`)}`
+      );
+      const { messages } = (await search.json()) as { messages?: Array<{ ID: string }> };
+      expect(messages?.length ?? 0).toBeGreaterThan(0);
+      const detail = await request.get(`http://127.0.0.1:56324/api/v1/message/${messages![0].ID}`);
+      const body = (await detail.json()) as { Text?: string; HTML?: string };
+      const match = `${body.Text ?? ""}\n${body.HTML ?? ""}`.match(/http:\/\/[^\s"'<]+\/auth\/v1\/verify[^\s"'<]*/);
+      expect(match).toBeTruthy();
+      confirmUrl = match![0];
+    }).toPass({ timeout: 30_000 });
+
+    // Cookies are host-scoped, so keep the redirect chain on the baseURL host
+    // (the emailed link's redirect_to points at localhost, not 127.0.0.1).
+    await page.goto(confirmUrl.replaceAll("localhost", "127.0.0.1"));
+    await page.waitForURL("**/onboarding");
+
+    // The fix under test: the profile is reachable BEFORE onboarding.
+    await page.goto(`/profiles/${generatedHandle}`);
+    await expect(page.getByRole("heading", { name: `e2e.signup.${stamp}` })).toBeVisible();
+
+    // Onboarding pre-fills the generated handle and still allows changing it.
+    await page.goto("/onboarding");
+    await expect(page.getByLabel("Handle")).toHaveValue(generatedHandle);
+    await page.getByLabel("Display name").fill("E2E Signup");
+    await page.getByLabel("Handle").fill(changedHandle);
+    for (const checkbox of await page.getByRole("checkbox").all()) {
+      await checkbox.check();
+    }
+    await page.getByRole("button", { name: "Start bartering" }).click();
+    await page.waitForURL("**/");
+
+    // The user menu's View profile link resolves to the new handle.
+    await page.getByRole("button", { name: "Account menu" }).click();
+    await page.getByRole("menuitem", { name: "View profile" }).click();
+    await page.waitForURL(`**/profiles/${changedHandle}`);
+    await expect(page.getByRole("heading", { name: "E2E Signup" })).toBeVisible();
   });
 });
 

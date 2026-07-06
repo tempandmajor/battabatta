@@ -16,7 +16,7 @@ export default async function NewOfferPage({
   const { to } = await searchParams;
   if (!to) notFound();
 
-  const { supabase, user } = await requireOnboardedUser();
+  const { supabase, user } = await requireOnboardedUser(`/messages/new?to=${encodeURIComponent(to)}`);
 
   const { data: recipient } = await supabase
     .from("profiles")

@@ -22,7 +22,7 @@ export default async function SettingsPage({
       .from("profile_private")
       .select("subscription_status, stripe_customer_id")
       .eq("profile_id", user.id)
-      .single(),
+      .maybeSingle(),
     supabase
       .from("blocks")
       .select("blocked_id, profiles:blocked_id (display_name, handle)")

@@ -1,5 +1,7 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 import { SupportHighlights, SupportPanel } from "@/components/support-panel";
+import { primaryButtonClass } from "@/components/ui";
 import { getSessionUser } from "@/lib/auth";
 import { nonprofit } from "@/lib/nonprofit";
 
@@ -32,11 +34,16 @@ export default async function SupportPage({
         <div>
           <h1 className="text-4xl font-bold leading-none tracking-[-0.04em]">Keep Battarbox free</h1>
           <p className="mt-4 max-w-2xl text-sm leading-7 text-muted">
-            Optional one-time and recurring platform support payments fund hosting, moderation, accessibility, safety,
-            and community operations. They never buy listing boosts, ranking preference, guaranteed matches, exchange
-            privileges, or payments to other members.
+            Optional donations and recurring platform support payments fund hosting, moderation, accessibility, safety,
+            and community operations for OMS2. They never buy listing boosts, ranking preference, guaranteed matches,
+            exchange privileges, or payments to other members.
           </p>
           <p className="mt-4 max-w-2xl text-sm leading-7 text-muted">{nonprofit.businessDescription}</p>
+          <div className="mt-6">
+            <Link href="#donate" className={primaryButtonClass}>
+              Donate to OMS2
+            </Link>
+          </div>
           <SupportHighlights />
           <section className="mt-8 max-w-2xl rounded-2xl border border-line bg-white p-5">
             <h2 className="text-lg font-bold tracking-[-0.02em]">Refunds and cancellations</h2>

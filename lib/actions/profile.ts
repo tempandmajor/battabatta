@@ -38,25 +38,28 @@ export async function completeOnboarding(_prev: FormState, formData: FormData): 
     return { error: parsed.error.issues[0]?.message ?? "Check the form and try again" };
   }
 
-  const { error: profileError } = await supabase
-    .from("profiles")
-    .update({
+  // Upserts, not updates: the signup trigger normally creates both rows,
+  // but if it ever failed the plain update would match 0 rows without an
+  // error and leave the user stuck in a permanent onboarding loop.
+  const { error: profileError } = await supabase.from("profiles").upsert(
+    {
+      id: user.id,
       display_name: parsed.data.displayName,
       handle: parsed.data.handle,
       bio: parsed.data.bio,
       public_location_label: parsed.data.publicLocationLabel || null,
       location_mode: parsed.data.locationMode,
       is_adult_confirmed: true
-    })
-    .eq("id", user.id);
+    },
+    { onConflict: "id" }
+  );
   if (profileError) return { error: friendlyProfileError(profileError.message) };
 
   const exactLocation = pointFrom(parsed.data.latitude, parsed.data.longitude);
   if (exactLocation) {
     const { error: locationError } = await supabase
       .from("profile_private")
-      .update({ exact_location: exactLocation })
-      .eq("profile_id", user.id);
+      .upsert({ profile_id: user.id, exact_location: exactLocation }, { onConflict: "profile_id" });
     if (locationError) return { error: locationError.message };
   }
 

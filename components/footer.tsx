@@ -30,7 +30,7 @@ export function Footer() {
             </a>{" "}
             ·{" "}
             <Link href="/support" className="font-medium text-ink hover:underline">
-              Support OMS2
+              Donate or support OMS2
             </Link>
           </p>
         </div>
