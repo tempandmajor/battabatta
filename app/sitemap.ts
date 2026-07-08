@@ -5,6 +5,8 @@ export default function sitemap(): MetadataRoute.Sitemap {
   const base = getSiteUrl();
   const staticPaths = [
     "",
+    "/about",
+    "/how-it-works",
     "/support",
     "/login",
     "/register",

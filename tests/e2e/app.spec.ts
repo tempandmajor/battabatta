@@ -43,6 +43,14 @@ test.describe("anonymous visitor", () => {
     }
   });
 
+  test("public context pages explain the platform", async ({ page }) => {
+    await page.goto("/about");
+    await expect(page.getByRole("heading", { name: "Free-first barter discovery for local and online exchanges" })).toBeVisible();
+
+    await page.goto("/how-it-works");
+    await expect(page.getByRole("heading", { name: "A simple workflow for safer barter conversations" })).toBeVisible();
+  });
+
   test("unknown routes show the 404 page", async ({ page }) => {
     await page.goto("/no-such-page");
     await expect(page.getByText("This page does not exist")).toBeVisible();
@@ -130,6 +138,18 @@ test.describe("member journey", () => {
 
     await page.goto("/");
     await expect(page.getByText(title)).toBeVisible();
+  });
+
+  test("prohibited public post content is blocked before publishing", async ({ page }) => {
+    await login(page, "sam@example.com");
+
+    await page.goto("/posts/new");
+    await page.getByLabel("Title").fill(`Cannabis trade ${Date.now()}`);
+    await page.getByLabel("Description").fill("Trying to trade a prohibited item that should never be public.");
+    await page.getByRole("button", { name: "Publish post" }).click();
+
+    await expect(page.getByText("This content appears to include a prohibited item")).toBeVisible();
+    await expect(page).toHaveURL(/\/posts\/new/);
   });
 
   test("maya sends an offer on a post and the thread opens", async ({ page }) => {

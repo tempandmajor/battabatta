@@ -45,6 +45,8 @@ export async function Header() {
 
         <nav aria-label="Primary" className="flex items-center gap-1 overflow-x-auto">
           <HeaderLink href="/">Discover</HeaderLink>
+          <HeaderLink href="/how-it-works">How it works</HeaderLink>
+          <HeaderLink href="/about">About</HeaderLink>
           {user && (
             <HeaderLink href="/messages">
               Messages

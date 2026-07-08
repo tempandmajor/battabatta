@@ -8,6 +8,10 @@ This is an implementation checklist. Verify the current Google AdSense and Googl
 - If serving users in the EEA, UK, or Switzerland, set `NEXT_PUBLIC_SERVE_EEA_UK_CH=true` and do not enable ads until a Google-certified CMP is live and `NEXT_PUBLIC_ADSENSE_CMP_READY=true`.
 - Add the AdSense publisher client ID and in-feed slot ID only after creating the approved in-feed unit.
 - Confirm `/ads.txt` returns the publisher line after ads are enabled.
+- Set `NEXT_PUBLIC_SITE_URL` to the exact production HTTPS origin before domain review.
+- Confirm the production CSP allows the Google ad script, frames, images, and network calls before enabling ads.
+- Launch with enough original public listings/profiles for Google to understand the site.
+- Keep active moderation staffed. Public profile, post, offer, and message writes include a deterministic prohibited-content screen, but production content still needs manual review.
 
 ## Placement Rules
 

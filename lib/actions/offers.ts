@@ -3,6 +3,7 @@
 import { redirect } from "next/navigation";
 import { revalidatePath } from "next/cache";
 import { isProfileSuspended, requireOnboardedUser } from "@/lib/auth";
+import { validatePublicContentForAdsense } from "@/lib/content-moderation";
 import { messageSchema, offerActionSchema, offerSchema } from "@/lib/validation";
 import type { FormState } from "@/lib/actions/auth";
 
@@ -20,6 +21,13 @@ export async function createOffer(_prev: FormState, formData: FormData): Promise
   if (!parsed.success) {
     return { error: parsed.error.issues[0]?.message ?? "Check the form and try again" };
   }
+  const moderationError = validatePublicContentForAdsense([
+    parsed.data.offeredItem,
+    parsed.data.requestedItem,
+    parsed.data.timing,
+    parsed.data.note
+  ]);
+  if (moderationError) return { error: moderationError };
   if (parsed.data.recipientId === user.id) {
     return { error: "You cannot make an offer to yourself" };
   }
@@ -98,6 +106,8 @@ export async function sendMessage(_prev: FormState, formData: FormData): Promise
   if (!parsed.success) {
     return { error: parsed.error.issues[0]?.message ?? "Write a message" };
   }
+  const moderationError = validatePublicContentForAdsense([parsed.data.body]);
+  if (moderationError) return { error: moderationError };
 
   const { error } = await supabase.from("messages").insert({
     offer_id: parsed.data.offerId,

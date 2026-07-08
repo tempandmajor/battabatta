@@ -11,20 +11,29 @@ const supabaseOrigin = (() => {
   }
 })();
 const supabaseWsOrigin = supabaseOrigin.replace(/^http/, "ws");
+const googleAdSources = [
+  "https://pagead2.googlesyndication.com",
+  "https://googleads.g.doubleclick.net",
+  "https://tpc.googlesyndication.com",
+  "https://fundingchoicesmessages.google.com",
+  "https://*.googlesyndication.com",
+  "https://*.google.com",
+  "https://*.g.doubleclick.net"
+].join(" ");
 
 const contentSecurityPolicy = [
   "default-src 'self'",
   // Next.js requires 'unsafe-inline' for its bootstrap scripts and 'unsafe-eval' in dev (react-refresh).
-  `script-src 'self' 'unsafe-inline'${isDev ? " 'unsafe-eval'" : ""}`,
+  `script-src 'self' 'unsafe-inline' ${googleAdSources}${isDev ? " 'unsafe-eval'" : ""}`,
   "style-src 'self' 'unsafe-inline'",
-  `img-src 'self' data: blob: ${supabaseOrigin}`.trim(),
+  `img-src 'self' data: blob: ${supabaseOrigin} ${googleAdSources}`.trim(),
   "font-src 'self'",
   // Sentry Session Replay runs its compression worker from a blob: URL.
   "worker-src 'self' blob:",
   // Sentry browser events go through the same-origin /monitoring tunnel, so
   // connect-src does not need the Sentry ingest origin.
-  `connect-src 'self' ${supabaseOrigin} ${supabaseWsOrigin}`.trim(),
-  "frame-src https://checkout.stripe.com https://js.stripe.com",
+  `connect-src 'self' ${supabaseOrigin} ${supabaseWsOrigin} ${googleAdSources}`.trim(),
+  `frame-src https://checkout.stripe.com https://js.stripe.com ${googleAdSources}`,
   "frame-ancestors 'none'",
   "base-uri 'self'",
   "form-action 'self' https://checkout.stripe.com https://billing.stripe.com"

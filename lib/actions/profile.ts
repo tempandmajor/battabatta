@@ -3,6 +3,7 @@
 import { redirect } from "next/navigation";
 import { revalidatePath } from "next/cache";
 import { requireOnboardedUser, requireUser } from "@/lib/auth";
+import { validatePublicContentForAdsense } from "@/lib/content-moderation";
 import { createSupabaseAdminClient } from "@/lib/supabase/admin";
 import { uploadImage } from "@/lib/upload";
 import { LEGAL_DOCUMENT_VERSIONS } from "@/lib/legal";
@@ -37,6 +38,12 @@ export async function completeOnboarding(_prev: FormState, formData: FormData): 
   if (!parsed.success) {
     return { error: parsed.error.issues[0]?.message ?? "Check the form and try again" };
   }
+  const moderationError = validatePublicContentForAdsense([
+    parsed.data.displayName,
+    parsed.data.bio,
+    parsed.data.publicLocationLabel
+  ]);
+  if (moderationError) return { error: moderationError };
 
   // Upserts, not updates: the signup trigger normally creates both rows,
   // but if it ever failed the plain update would match 0 rows without an
@@ -98,6 +105,13 @@ export async function updateProfile(_prev: FormState, formData: FormData): Promi
   if (!parsed.success) {
     return { error: parsed.error.issues[0]?.message ?? "Check the form and try again" };
   }
+  const moderationError = validatePublicContentForAdsense([
+    parsed.data.displayName,
+    parsed.data.bio,
+    parsed.data.publicLocationLabel,
+    ...parsed.data.interests
+  ]);
+  if (moderationError) return { error: moderationError };
 
   let avatarPath: string | null = null;
   try {

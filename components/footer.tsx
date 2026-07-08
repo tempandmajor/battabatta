@@ -2,6 +2,8 @@ import Link from "next/link";
 import { nonprofit } from "@/lib/nonprofit";
 
 const legalLinks = [
+  { href: "/about", label: "About" },
+  { href: "/how-it-works", label: "How It Works" },
   { href: "/legal/terms", label: "Terms of Use" },
   { href: "/legal/privacy", label: "Privacy" },
   { href: "/legal/safety", label: "Safety" },

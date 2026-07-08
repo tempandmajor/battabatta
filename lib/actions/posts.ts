@@ -3,6 +3,7 @@
 import { redirect } from "next/navigation";
 import { revalidatePath } from "next/cache";
 import { requireOnboardedUser } from "@/lib/auth";
+import { validatePublicContentForAdsense } from "@/lib/content-moderation";
 import { uploadImage } from "@/lib/upload";
 import { postSchema } from "@/lib/validation";
 import type { FormState } from "@/lib/actions/auth";
@@ -53,6 +54,13 @@ export async function createPost(_prev: FormState, formData: FormData): Promise<
   if (!parsed.success) {
     return { error: parsed.error.issues[0]?.message ?? "Check the form and try again" };
   }
+  const moderationError = validatePublicContentForAdsense([
+    parsed.data.title,
+    parsed.data.body,
+    parsed.data.whatICanGive,
+    parsed.data.availabilityUnit
+  ]);
+  if (moderationError) return { error: moderationError };
 
   // Local posts inherit the member's private coordinates (for bucketed distance
   // in discovery) and public label. Never any address or exact display.
@@ -104,6 +112,13 @@ export async function updatePost(_prev: FormState, formData: FormData): Promise<
   if (!parsed.success) {
     return { error: parsed.error.issues[0]?.message ?? "Check the form and try again" };
   }
+  const moderationError = validatePublicContentForAdsense([
+    parsed.data.title,
+    parsed.data.body,
+    parsed.data.whatICanGive,
+    parsed.data.availabilityUnit
+  ]);
+  if (moderationError) return { error: moderationError };
 
   const status = formData.get("status") === "paused" ? "paused" : "active";
 
