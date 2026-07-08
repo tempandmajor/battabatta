@@ -49,6 +49,15 @@ test.describe("anonymous visitor", () => {
 
     await page.goto("/how-it-works");
     await expect(page.getByRole("heading", { name: "A simple workflow for safer barter conversations" })).toBeVisible();
+
+    await page.goto("/guides/good-posts");
+    await expect(page.getByRole("heading", { name: "How to write a useful barter post" })).toBeVisible();
+
+    await page.goto("/guides/safety-checklist");
+    await expect(page.getByRole("heading", { name: "Barter safety checklist" })).toBeVisible();
+
+    await page.goto("/guides/community-examples");
+    await expect(page.getByRole("heading", { name: "Community barter ideas that fit Battarbox" })).toBeVisible();
   });
 
   test("unknown routes show the 404 page", async ({ page }) => {

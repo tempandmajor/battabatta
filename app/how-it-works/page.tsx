@@ -72,6 +72,25 @@ export default function HowItWorksPage() {
         </div>
       </section>
 
+      <section className="mt-10 rounded-xl border border-line bg-white p-5">
+        <h2 className="text-lg font-bold tracking-[-0.02em]">Helpful guides</h2>
+        <p className="mt-2 text-sm leading-7 text-muted">
+          These guides show how to write specific posts, stay within safety boundaries, and understand the kinds of
+          exchanges that work well on Battarbox.
+        </p>
+        <div className="mt-4 flex flex-wrap gap-3">
+          <Link href="/guides/good-posts" className={secondaryButtonClass}>
+            Good post guide
+          </Link>
+          <Link href="/guides/safety-checklist" className={secondaryButtonClass}>
+            Safety checklist
+          </Link>
+          <Link href="/guides/community-examples" className={secondaryButtonClass}>
+            Community examples
+          </Link>
+        </div>
+      </section>
+
       <div className="mt-8 flex flex-wrap gap-3">
         <Link href="/" className={primaryButtonClass}>
           Browse offers

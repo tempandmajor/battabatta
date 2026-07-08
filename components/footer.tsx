@@ -4,6 +4,9 @@ import { nonprofit } from "@/lib/nonprofit";
 const legalLinks = [
   { href: "/about", label: "About" },
   { href: "/how-it-works", label: "How It Works" },
+  { href: "/guides/good-posts", label: "Good Post Guide" },
+  { href: "/guides/safety-checklist", label: "Safety Checklist" },
+  { href: "/guides/community-examples", label: "Examples" },
   { href: "/legal/terms", label: "Terms of Use" },
   { href: "/legal/privacy", label: "Privacy" },
   { href: "/legal/safety", label: "Safety" },
