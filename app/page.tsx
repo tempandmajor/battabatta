@@ -122,7 +122,7 @@ export default async function DiscoverPage({
         <div className="mt-7 grid gap-5 md:grid-cols-2 xl:grid-cols-3">
           {results.map((post, index) => (
             <Fragment key={post.id}>
-              <PostCard post={post} saved={savedIds.has(post.id)} showSave={Boolean(user)} />
+              <PostCard post={post} saved={savedIds.has(post.id)} showSave={Boolean(user)} currentUserId={user?.id ?? null} />
               {results.length >= 6 && index >= 5 && (index - 5) % 9 === 0 && (
                 <InFeedAdCard key={`ad-${index}`} />
               )}

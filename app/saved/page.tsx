@@ -56,7 +56,7 @@ export default async function SavedPostsPage() {
       ) : (
         <div className="mt-8 grid gap-5 md:grid-cols-2 xl:grid-cols-3">
           {posts.map((post) => (
-            <PostCard key={post.id} post={post} saved showSave />
+            <PostCard key={post.id} post={post} saved showSave currentUserId={user.id} />
           ))}
         </div>
       )}

@@ -192,7 +192,7 @@ export default async function PostPage({ params }: { params: Promise<{ id: strin
           </div>
         </article>
 
-        <aside>
+        <aside id="make-an-offer" className="scroll-mt-24">
           {isOwner ? (
             <div className="rounded-2xl border border-line bg-white p-5 text-[13px] leading-6 text-muted">
               This is your post. Offers from other members will appear in{" "}

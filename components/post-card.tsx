@@ -1,7 +1,7 @@
 import Link from "next/link";
-import { Bookmark } from "lucide-react";
+import { Bookmark, Handshake } from "lucide-react";
 import { Avatar, avatarTone } from "@/components/avatar";
-import { Badge } from "@/components/ui";
+import { Badge, secondaryButtonClass } from "@/components/ui";
 import { toggleSavePost } from "@/lib/actions/posts";
 import { CATEGORY_LABEL, POST_KIND_LABEL, formatAvailability, timeAgo } from "@/lib/format";
 import { publicStorageUrl } from "@/lib/utils";
@@ -29,7 +29,17 @@ export type PostCardData = {
   cover_photo_path?: string | null;
 };
 
-export function PostCard({ post, saved, showSave }: { post: PostCardData; saved: boolean; showSave: boolean }) {
+export function PostCard({
+  post,
+  saved,
+  showSave,
+  currentUserId
+}: {
+  post: PostCardData;
+  saved: boolean;
+  showSave: boolean;
+  currentUserId?: string | null;
+}) {
   const meta = [post.distance_bucket ?? post.approximate_location_label, timeAgo(post.created_at)]
     .filter(Boolean)
     .join(" · ");
@@ -39,6 +49,9 @@ export function PostCard({ post, saved, showSave }: { post: PostCardData; saved:
     total: post.availability_total,
     unit: post.availability_unit
   });
+  const soldOut = post.availability_total !== null && (post.availability_remaining ?? 0) <= 0;
+  const isOwner = currentUserId != null && currentUserId === post.owner_id;
+  const showOfferCta = !isOwner && !soldOut;
 
   return (
     <article className="flex min-h-[260px] flex-col gap-4 overflow-hidden rounded-2xl border border-line bg-white p-5 transition hover:-translate-y-0.5 hover:border-ink hover:shadow-lift">
@@ -100,39 +113,47 @@ export function PostCard({ post, saved, showSave }: { post: PostCardData; saved:
         </div>
       )}
 
-      {profileHref ? (
-        <Link href={profileHref as never} className="mt-auto flex w-fit items-center gap-2.5 pt-1 hover:underline">
-          <Avatar
-            name={post.owner_display_name}
-            avatarPath={post.owner_avatar_url}
-            tone={avatarTone(post.owner_id)}
-            size="sm"
-          />
-          <span className="leading-tight">
-            <span className="block text-[13px] font-medium">{post.owner_display_name}</span>
-            <span className="block text-xs text-[#8a8a8a]">
-              @{post.owner_handle} {post.owner_supporter_since ? "· Supporter" : ""} {meta ? `· ${meta}` : ""}
+      <div className="mt-auto space-y-3 pt-1">
+        {profileHref ? (
+          <Link href={profileHref as never} className="flex w-fit items-center gap-2.5 hover:underline">
+            <Avatar
+              name={post.owner_display_name}
+              avatarPath={post.owner_avatar_url}
+              tone={avatarTone(post.owner_id)}
+              size="sm"
+            />
+            <span className="leading-tight">
+              <span className="block text-[13px] font-medium">{post.owner_display_name}</span>
+              <span className="block text-xs text-[#8a8a8a]">
+                @{post.owner_handle} {post.owner_supporter_since ? "· Supporter" : ""} {meta ? `· ${meta}` : ""}
+              </span>
             </span>
-          </span>
-        </Link>
-      ) : (
-        <div className="mt-auto flex items-center gap-2.5 pt-1">
-          <Avatar
-            name={post.owner_display_name}
-            avatarPath={post.owner_avatar_url}
-            tone={avatarTone(post.owner_id)}
-            size="sm"
-          />
-          <div className="leading-tight">
-            <p className="text-[13px] font-medium">{post.owner_display_name}</p>
-            <p className="text-xs text-[#8a8a8a]">
-              {post.owner_supporter_since ? "Supporter" : ""}
-              {post.owner_supporter_since && meta ? " · " : ""}
-              {meta}
-            </p>
+          </Link>
+        ) : (
+          <div className="flex items-center gap-2.5">
+            <Avatar
+              name={post.owner_display_name}
+              avatarPath={post.owner_avatar_url}
+              tone={avatarTone(post.owner_id)}
+              size="sm"
+            />
+            <div className="leading-tight">
+              <p className="text-[13px] font-medium">{post.owner_display_name}</p>
+              <p className="text-xs text-[#8a8a8a]">
+                {post.owner_supporter_since ? "Supporter" : ""}
+                {post.owner_supporter_since && meta ? " · " : ""}
+                {meta}
+              </p>
+            </div>
           </div>
-        </div>
-      )}
+        )}
+
+        {showOfferCta && (
+          <Link href={`/posts/${post.id}#make-an-offer`} className={`${secondaryButtonClass} w-full`}>
+            <Handshake size={14} className="mr-1.5" aria-hidden /> Make an offer
+          </Link>
+        )}
+      </div>
     </article>
   );
 }
