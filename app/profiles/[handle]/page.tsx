@@ -32,7 +32,7 @@ export default async function ProfilePage({ params }: { params: Promise<{ handle
   const [postsResult, interestsResult, followerCount, followingCount, myFollow, myBlock] = await Promise.all([
     supabase
       .from("posts")
-      .select("id, kind, category, title, body, what_i_can_give")
+      .select("id, kind, category, title, body, what_i_can_give, looking_for")
       .eq("owner_id", profile.id)
       .eq("status", "active")
       .order("created_at", { ascending: false }),
@@ -163,6 +163,11 @@ export default async function ProfilePage({ params }: { params: Promise<{ handle
                     {post.what_i_can_give && (
                       <p className="mt-3 text-xs text-[#8a8a8a]">
                         <span className="font-medium text-ink">Can give:</span> {post.what_i_can_give}
+                      </p>
+                    )}
+                    {post.looking_for && (
+                      <p className="mt-2 text-xs text-[#8a8a8a]">
+                        <span className="font-medium text-ink">Looking for:</span> {post.looking_for}
                       </p>
                     )}
                   </Link>

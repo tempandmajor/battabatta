@@ -20,6 +20,40 @@ Ten friends can materially improve approval readiness if they create genuine acc
 - Review every profile, post, and image before AdSense submission.
 - Help friends write clearer posts, but do not create fake accounts or invented listings.
 
+## Launch Content Import Workflow
+
+The launch import workflow stages content for admin review only. It does not create live accounts, set passwords, accept legal terms, or publish posts for friends.
+
+1. Extract the DOCX into structured JSON:
+
+   ```bash
+   node scripts/extract-launch-content.mjs ~/Downloads/Battarbox_10_Accounts_40_Posts.docx > /tmp/battarbox-launch-content.json
+   ```
+
+2. Import the JSON into the admin staging tables:
+
+   ```bash
+   npm run launch:import -- /tmp/battarbox-launch-content.json
+   ```
+
+3. Open `/admin` and review Launch content staging.
+4. Mark each profile and post as first batch, later batch, needs edits, or staged.
+5. Send real invites to friends and have each friend create their own account, confirm email, accept terms, and publish reviewed first-batch posts.
+
+## Hosted Live Seed Workflow
+
+If you intentionally need the temporary-password live seed path for project `bjmjpwvstlaccflabwjv`, keep it isolated from local Docker env:
+
+1. Copy `.env.hosted.example` to `.env.hosted.local`.
+2. Add the hosted service-role key.
+3. Run:
+
+   ```bash
+   npm run launch:seed-live:hosted -- ~/Downloads/Battarbox_10_Accounts_40_Posts.docx
+   ```
+
+The script will refuse to run unless the env resolves to hosted project ref `bjmjpwvstlaccflabwjv`.
+
 ## Post Quality Checklist
 
 Each public post should answer:
@@ -39,5 +73,7 @@ Before submission, review all public content for:
 - Alcohol, tobacco, nicotine, vaping products, adult services, explicit sexual content, or unsafe personal services.
 - Financial products, stored value, gift cards, crypto, money transfers, gambling, raffles, or sweepstakes.
 - Counterfeit goods, recalled goods, stolen goods, hate/extremism, illegal activity, or harassment.
+
+Also correct any existing production listing that has mismatched content before inviting new members. The July 8 launch document specifically calls out a public real-estate listing with unrelated MVP-planning text and incorrect `Can give` content; fix or hide that listing before importing friend content.
 
 Ads should stay disabled until AdSense approval is complete.

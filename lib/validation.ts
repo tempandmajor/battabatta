@@ -64,6 +64,7 @@ export const postSchema = z
     title: z.string().trim().min(4, "Title must be at least 4 characters").max(140, "Title must be at most 140 characters"),
     body: z.string().trim().min(10, "Description must be at least 10 characters").max(2000, "Description must be at most 2000 characters"),
     whatICanGive: z.string().trim().max(500, "Must be at most 500 characters").default(""),
+    lookingFor: z.string().trim().max(500, "Must be at most 500 characters").default(""),
     locationMode: z.enum(["local", "online", "local_and_online"]),
     approvalPolicy: z.enum(["auto_accept_until_limit", "manual_approval"]),
     availabilityTotal: z.coerce.number().int().min(1).max(1000).optional(),

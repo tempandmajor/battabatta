@@ -23,6 +23,7 @@ describe("product safety boundaries", () => {
       title: "App developer client openings",
       body: "Small app builds for nonprofits and community projects.",
       whatICanGive: "",
+      lookingFor: "Garden help or writing support",
       locationMode: "online" as const,
       approvalPolicy: "manual_approval" as const
     };

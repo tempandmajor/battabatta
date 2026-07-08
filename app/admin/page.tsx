@@ -11,7 +11,9 @@ import {
   setReportReviewing,
   suspendProfile,
   unblockProfileFromAdmin,
-  unsuspendProfile
+  unsuspendProfile,
+  updateLaunchPostStatus,
+  updateLaunchProfileStatus
 } from "@/lib/actions/admin";
 import { requireAdminUser } from "@/lib/auth";
 import { timeAgo } from "@/lib/format";
@@ -102,6 +104,35 @@ type PrivateProfileRow = {
   subscription_last_payment_status: string | null;
 };
 
+type LaunchStatus = "staged" | "approved_first_batch" | "approved_later_batch" | "needs_edits";
+
+type LaunchProfileRow = {
+  id: string;
+  source_index: number;
+  display_name: string;
+  suggested_handle: string;
+  setup_email: string;
+  public_role: string;
+  bio: string;
+  status: LaunchStatus;
+  notes: string | null;
+};
+
+type LaunchPostRow = {
+  id: string;
+  launch_profile_id: string;
+  source_post_number: number;
+  title: string;
+  body: string;
+  what_i_can_give: string | null;
+  looking_for: string | null;
+  availability_total: number | null;
+  availability_unit: string | null;
+  batch: number;
+  status: LaunchStatus;
+  notes: string | null;
+};
+
 function keyById<T extends { id: string }>(rows: T[] | null | undefined): Map<string, T> {
   return new Map((rows ?? []).map((row) => [row.id, row]));
 }
@@ -137,6 +168,32 @@ function NoteField({ id }: { id: string }) {
   );
 }
 
+function LaunchStatusControls({
+  id,
+  fieldName,
+  currentStatus,
+  action
+}: {
+  id: string;
+  fieldName: "launchProfileId" | "launchPostId";
+  currentStatus: LaunchStatus;
+  action: (formData: FormData) => Promise<void>;
+}) {
+  return (
+    <form action={action} className="flex flex-wrap items-center gap-2">
+      <input type="hidden" name={fieldName} value={id} />
+      <select name="status" defaultValue={currentStatus} className={`${inputClass} w-auto py-2 text-xs`}>
+        <option value="staged">Staged</option>
+        <option value="approved_first_batch">First batch</option>
+        <option value="approved_later_batch">Later batch</option>
+        <option value="needs_edits">Needs edits</option>
+      </select>
+      <input name="note" placeholder="Review note" maxLength={1000} className={`${inputClass} w-48 py-2 text-xs`} />
+      <button className={ghostButtonClass}>Save</button>
+    </form>
+  );
+}
+
 export default async function AdminPage() {
   const { admin, user, role } = await requireAdminUser();
 
@@ -149,7 +206,9 @@ export default async function AdminPage() {
     { data: moderation },
     { data: audit },
     { data: donations },
-    { data: subscriptions }
+    { data: subscriptions },
+    { data: launchProfiles },
+    { data: launchPosts }
   ] =
     await Promise.all([
       admin
@@ -179,6 +238,16 @@ export default async function AdminPage() {
         )
         .neq("subscription_status", "none")
         .order("updated_at", { ascending: false })
+        .limit(25),
+      admin
+        .from("launch_content_profiles")
+        .select("id, source_index, display_name, suggested_handle, setup_email, public_role, bio, status, notes")
+        .order("source_index", { ascending: true }),
+      admin
+        .from("launch_content_posts")
+        .select("id, launch_profile_id, source_post_number, title, body, what_i_can_give, looking_for, availability_total, availability_unit, batch, status, notes")
+        .order("batch", { ascending: true })
+        .order("source_post_number", { ascending: true })
         .limit(25)
     ]);
 
@@ -190,6 +259,11 @@ export default async function AdminPage() {
   const moderationMap = new Map(((moderation ?? []) as ModerationRow[]).map((row) => [row.profile_id, row]));
   const openReports = typedReports.filter((report) => report.status === "open" || report.status === "reviewing");
   const totalDonations = ((donations ?? []) as DonationRow[]).reduce((total, donation) => total + donation.amount_cents, 0);
+  const launchPostRows = (launchPosts ?? []) as LaunchPostRow[];
+  const launchPostCountByProfile = new Map<string, number>();
+  for (const post of launchPostRows) {
+    launchPostCountByProfile.set(post.launch_profile_id, (launchPostCountByProfile.get(post.launch_profile_id) ?? 0) + 1);
+  }
 
   return (
     <main className="mx-auto w-full max-w-7xl px-5 py-10 sm:px-8">
@@ -318,6 +392,96 @@ export default async function AdminPage() {
               );
             })
           )}
+        </div>
+      </section>
+
+      <section className="mt-10">
+        <div className="flex flex-wrap items-end justify-between gap-3">
+          <div>
+            <h2 className="text-xl font-bold tracking-[-0.02em]">Launch content staging</h2>
+            <p className="mt-1 text-[13px] text-muted">
+              Review imported friend profiles and posts before inviting members or publishing anything live.
+            </p>
+          </div>
+        </div>
+
+        <div className="mt-4 grid gap-5 lg:grid-cols-[360px_1fr]">
+          <div className="space-y-3">
+            {((launchProfiles ?? []) as LaunchProfileRow[]).length === 0 ? (
+              <p className="rounded-2xl border border-line bg-white p-5 text-[13px] text-muted">
+                No launch profiles imported yet. Use the launch extract/import scripts after reviewing the DOCX.
+              </p>
+            ) : (
+              ((launchProfiles ?? []) as LaunchProfileRow[]).map((profile) => (
+                <article key={profile.id} className="rounded-2xl border border-line bg-white p-4">
+                  <div className="flex flex-wrap items-start justify-between gap-2">
+                    <div>
+                      <p className="text-sm font-semibold">{profile.display_name}</p>
+                      <p className="text-xs text-muted">
+                        @{profile.suggested_handle} · {profile.public_role} · {launchPostCountByProfile.get(profile.id) ?? 0} posts
+                      </p>
+                    </div>
+                    <Badge tone={profile.status === "needs_edits" ? "solid" : "soft"}>{profile.status.replaceAll("_", " ")}</Badge>
+                  </div>
+                  <p className="mt-3 line-clamp-3 text-[13px] leading-6 text-muted">{profile.bio}</p>
+                  <LaunchStatusControls
+                    id={profile.id}
+                    fieldName="launchProfileId"
+                    currentStatus={profile.status}
+                    action={updateLaunchProfileStatus}
+                  />
+                </article>
+              ))
+            )}
+          </div>
+
+          <div className="space-y-3">
+            {launchPostRows.length === 0 ? (
+              <p className="rounded-2xl border border-line bg-white p-5 text-[13px] text-muted">
+                No launch posts imported yet.
+              </p>
+            ) : (
+              launchPostRows.map((post) => {
+                const launchProfile = ((launchProfiles ?? []) as LaunchProfileRow[]).find(
+                  (profile) => profile.id === post.launch_profile_id
+                );
+                return (
+                  <article key={post.id} className="rounded-2xl border border-line bg-white p-5">
+                    <div className="flex flex-wrap items-start justify-between gap-3">
+                      <div>
+                        <div className="flex flex-wrap items-center gap-2">
+                          <Badge tone={post.batch === 1 ? "outline" : "soft"}>batch {post.batch}</Badge>
+                          <Badge tone={post.status === "needs_edits" ? "solid" : "soft"}>{post.status.replaceAll("_", " ")}</Badge>
+                        </div>
+                        <h3 className="mt-2 text-base font-bold tracking-[-0.01em]">{post.title}</h3>
+                        <p className="mt-1 text-xs text-muted">
+                          {launchProfile?.display_name ?? "Unknown launch profile"} · {post.availability_total ?? "No"}{" "}
+                          {post.availability_unit ?? "availability limit"}
+                        </p>
+                      </div>
+                      <LaunchStatusControls
+                        id={post.id}
+                        fieldName="launchPostId"
+                        currentStatus={post.status}
+                        action={updateLaunchPostStatus}
+                      />
+                    </div>
+                    <p className="mt-3 line-clamp-3 text-[13px] leading-6 text-[#3d3d3d]">{post.body}</p>
+                    <dl className="mt-3 grid gap-3 text-xs md:grid-cols-2">
+                      <div className="rounded-lg bg-mist p-3">
+                        <dt className="font-semibold text-muted">Can give</dt>
+                        <dd className="mt-1 text-ink">{post.what_i_can_give ?? "Not specified"}</dd>
+                      </div>
+                      <div className="rounded-lg bg-mist p-3">
+                        <dt className="font-semibold text-muted">Looking for</dt>
+                        <dd className="mt-1 text-ink">{post.looking_for ?? "Not specified"}</dd>
+                      </div>
+                    </dl>
+                  </article>
+                );
+              })
+            )}
+          </div>
         </div>
       </section>
 

@@ -39,6 +39,22 @@ Prereqs: Node 22+, Docker (for Supabase), Supabase CLI.
 
 Local emails (confirmations, resets) land in Inbucket at `http://127.0.0.1:56324`. Supabase Studio: `http://127.0.0.1:56323`.
 
+The repo is also linked to hosted Supabase project `bjmjpwvstlaccflabwjv` (`battabatta`), but local development should keep using the Docker-backed ports above. Do not point `.env.local` at the hosted project unless you intentionally want the app talking to production data.
+
+## Hosted Supabase Operations
+
+Use a separate env file for one-off hosted scripts so local dev and hosted operations do not share credentials.
+
+1. `cp .env.hosted.example .env.hosted.local`
+2. Fill in the hosted `SUPABASE_SERVICE_ROLE_KEY` for project `bjmjpwvstlaccflabwjv`
+3. Run hosted-only scripts with the dedicated npm entrypoint:
+
+```bash
+npm run launch:seed-live:hosted -- ~/Downloads/Battarbox_10_Accounts_40_Posts.docx
+```
+
+The live seed script refuses to run unless `NEXT_PUBLIC_SUPABASE_URL` resolves to project ref `bjmjpwvstlaccflabwjv`.
+
 Stripe routes require `STRIPE_SECRET_KEY`, `STRIPE_WEBHOOK_SECRET`, and `STRIPE_SUPPORTER_PRICE_ID`. Configure `STRIPE_SUPPORTER_PRICE_ID` as a recurring USD Price for $10.99/month under a Stripe Product for OMS2 platform support. Use `npm run stripe:listen` to forward local webhooks.
 
 Invite emails require `RESEND_API_KEY`. AdSense placements require `NEXT_PUBLIC_ADS_ENABLED=true`,

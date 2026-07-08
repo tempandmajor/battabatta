@@ -3,7 +3,7 @@ import { Bookmark } from "lucide-react";
 import { Avatar, avatarTone } from "@/components/avatar";
 import { Badge } from "@/components/ui";
 import { toggleSavePost } from "@/lib/actions/posts";
-import { CATEGORY_LABEL, POST_KIND_LABEL, timeAgo } from "@/lib/format";
+import { CATEGORY_LABEL, POST_KIND_LABEL, formatAvailability, timeAgo } from "@/lib/format";
 import { publicStorageUrl } from "@/lib/utils";
 
 export type PostCardData = {
@@ -13,6 +13,7 @@ export type PostCardData = {
   title: string;
   body: string;
   what_i_can_give: string | null;
+  looking_for: string | null;
   approximate_location_label: string | null;
   availability_total: number | null;
   availability_remaining: number | null;
@@ -33,6 +34,11 @@ export function PostCard({ post, saved, showSave }: { post: PostCardData; saved:
     .filter(Boolean)
     .join(" · ");
   const profileHref = post.owner_handle ? `/profiles/${post.owner_handle}` : null;
+  const availability = formatAvailability({
+    remaining: post.availability_remaining,
+    total: post.availability_total,
+    unit: post.availability_unit
+  });
 
   return (
     <article className="flex min-h-[260px] flex-col gap-4 overflow-hidden rounded-2xl border border-line bg-white p-5 transition hover:-translate-y-0.5 hover:border-ink hover:shadow-lift">
@@ -81,12 +87,15 @@ export function PostCard({ post, saved, showSave }: { post: PostCardData; saved:
         </div>
       )}
 
-      {post.availability_total !== null && (
+      {post.looking_for && (
+        <div className="rounded-lg bg-[#f7f7f7] px-3 py-2 text-xs text-ink">
+          <span className="text-muted">Looking for:</span> {post.looking_for}
+        </div>
+      )}
+
+      {availability && (
         <div className="rounded-lg border border-line px-3 py-2 text-xs text-ink">
-          <span className="font-semibold">
-            {post.availability_remaining ?? 0} of {post.availability_total}
-          </span>{" "}
-          {post.availability_unit} available
+          <span className="font-semibold">{availability}</span>
           {post.approval_policy === "manual_approval" && <span className="text-muted"> · approval required</span>}
         </div>
       )}

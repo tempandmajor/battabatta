@@ -386,6 +386,131 @@ export type Database = {
           },
         ]
       }
+      launch_content_posts: {
+        Row: {
+          approval_policy: Database["public"]["Enums"]["approval_policy"]
+          availability_total: number | null
+          availability_unit: string | null
+          batch: number
+          body: string
+          category: Database["public"]["Enums"]["post_category"]
+          created_at: string
+          id: string
+          kind: Database["public"]["Enums"]["post_kind"]
+          launch_profile_id: string
+          location_mode: Database["public"]["Enums"]["location_mode"]
+          looking_for: string | null
+          notes: string | null
+          source_post_number: number
+          status: Database["public"]["Enums"]["launch_content_status"]
+          suggested_images: string | null
+          title: string
+          updated_at: string
+          what_i_can_give: string | null
+        }
+        Insert: {
+          approval_policy?: Database["public"]["Enums"]["approval_policy"]
+          availability_total?: number | null
+          availability_unit?: string | null
+          batch?: number
+          body: string
+          category?: Database["public"]["Enums"]["post_category"]
+          created_at?: string
+          id?: string
+          kind?: Database["public"]["Enums"]["post_kind"]
+          launch_profile_id: string
+          location_mode?: Database["public"]["Enums"]["location_mode"]
+          looking_for?: string | null
+          notes?: string | null
+          source_post_number: number
+          status?: Database["public"]["Enums"]["launch_content_status"]
+          suggested_images?: string | null
+          title: string
+          updated_at?: string
+          what_i_can_give?: string | null
+        }
+        Update: {
+          approval_policy?: Database["public"]["Enums"]["approval_policy"]
+          availability_total?: number | null
+          availability_unit?: string | null
+          batch?: number
+          body?: string
+          category?: Database["public"]["Enums"]["post_category"]
+          created_at?: string
+          id?: string
+          kind?: Database["public"]["Enums"]["post_kind"]
+          launch_profile_id?: string
+          location_mode?: Database["public"]["Enums"]["location_mode"]
+          looking_for?: string | null
+          notes?: string | null
+          source_post_number?: number
+          status?: Database["public"]["Enums"]["launch_content_status"]
+          suggested_images?: string | null
+          title?: string
+          updated_at?: string
+          what_i_can_give?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "launch_content_posts_launch_profile_id_fkey"
+            columns: ["launch_profile_id"]
+            isOneToOne: false
+            referencedRelation: "launch_content_profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      launch_content_profiles: {
+        Row: {
+          bio: string
+          created_at: string
+          display_name: string
+          id: string
+          interests: string[]
+          location_mode: Database["public"]["Enums"]["location_mode"]
+          notes: string | null
+          public_location_label: string | null
+          public_role: string
+          setup_email: string
+          source_index: number
+          status: Database["public"]["Enums"]["launch_content_status"]
+          suggested_handle: string
+          updated_at: string
+        }
+        Insert: {
+          bio: string
+          created_at?: string
+          display_name: string
+          id?: string
+          interests?: string[]
+          location_mode?: Database["public"]["Enums"]["location_mode"]
+          notes?: string | null
+          public_location_label?: string | null
+          public_role: string
+          setup_email: string
+          source_index: number
+          status?: Database["public"]["Enums"]["launch_content_status"]
+          suggested_handle: string
+          updated_at?: string
+        }
+        Update: {
+          bio?: string
+          created_at?: string
+          display_name?: string
+          id?: string
+          interests?: string[]
+          location_mode?: Database["public"]["Enums"]["location_mode"]
+          notes?: string | null
+          public_location_label?: string | null
+          public_role?: string
+          setup_email?: string
+          source_index?: number
+          status?: Database["public"]["Enums"]["launch_content_status"]
+          suggested_handle?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       posts: {
         Row: {
           approval_policy: Database["public"]["Enums"]["approval_policy"]
@@ -401,6 +526,7 @@ export type Database = {
           kind: Database["public"]["Enums"]["post_kind"]
           location: unknown
           location_mode: Database["public"]["Enums"]["location_mode"]
+          looking_for: string | null
           owner_id: string
           search_vector: unknown
           status: Database["public"]["Enums"]["post_status"]
@@ -422,6 +548,7 @@ export type Database = {
           kind: Database["public"]["Enums"]["post_kind"]
           location?: unknown
           location_mode?: Database["public"]["Enums"]["location_mode"]
+          looking_for?: string | null
           owner_id: string
           search_vector?: unknown
           status?: Database["public"]["Enums"]["post_status"]
@@ -443,6 +570,7 @@ export type Database = {
           kind?: Database["public"]["Enums"]["post_kind"]
           location?: unknown
           location_mode?: Database["public"]["Enums"]["location_mode"]
+          looking_for?: string | null
           owner_id?: string
           search_vector?: unknown
           status?: Database["public"]["Enums"]["post_status"]
@@ -788,6 +916,7 @@ export type Database = {
           owner_id: string
           title: string
           what_i_can_give: string
+          looking_for: string
         }[]
       }
       list_threads: {
@@ -836,6 +965,11 @@ export type Database = {
     }
     Enums: {
       approval_policy: "auto_accept_until_limit" | "manual_approval"
+      launch_content_status:
+        | "staged"
+        | "approved_first_batch"
+        | "approved_later_batch"
+        | "needs_edits"
       location_mode: "local" | "online" | "local_and_online"
       offer_status:
         | "pending"
@@ -1540,6 +1674,12 @@ export const Constants = {
     Enums: {
       approval_policy: ["auto_accept_until_limit", "manual_approval"],
       location_mode: ["local", "online", "local_and_online"],
+      launch_content_status: [
+        "staged",
+        "approved_first_batch",
+        "approved_later_batch",
+        "needs_edits",
+      ],
       offer_status: [
         "pending",
         "interested",

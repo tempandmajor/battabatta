@@ -33,6 +33,20 @@ export function initialsOf(name: string): string {
     .join("");
 }
 
+export function formatAvailability({
+  remaining,
+  total,
+  unit
+}: {
+  remaining: number | null;
+  total: number | null;
+  unit: string | null;
+}): string | null {
+  if (total === null) return null;
+  const cleanUnit = (unit ?? "slots").replace(/\s+available\b/i, "").trim() || "slots";
+  return `${remaining ?? 0} of ${total} ${cleanUnit}`;
+}
+
 export const POST_KIND_LABEL: Record<string, string> = {
   offering: "Offering",
   seeking: "Seeking"

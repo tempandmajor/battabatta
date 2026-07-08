@@ -13,7 +13,7 @@ export default async function EditPostPage({ params }: { params: Promise<{ id: s
 
   const { data: post } = await supabase
     .from("posts")
-    .select("id, owner_id, kind, category, title, body, what_i_can_give, location_mode, approval_policy, availability_total, availability_unit, status")
+    .select("id, owner_id, kind, category, title, body, what_i_can_give, looking_for, location_mode, approval_policy, availability_total, availability_unit, status")
     .eq("id", id)
     .eq("owner_id", user.id)
     .maybeSingle();

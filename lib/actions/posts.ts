@@ -40,6 +40,7 @@ function parsePostForm(formData: FormData) {
     title: formData.get("title"),
     body: formData.get("body"),
     whatICanGive: formData.get("whatICanGive") ?? "",
+    lookingFor: formData.get("lookingFor") ?? "",
     locationMode: formData.get("locationMode"),
     approvalPolicy: formData.get("approvalPolicy") ?? "manual_approval",
     availabilityTotal: formData.get("availabilityTotal") || undefined,
@@ -58,6 +59,7 @@ export async function createPost(_prev: FormState, formData: FormData): Promise<
     parsed.data.title,
     parsed.data.body,
     parsed.data.whatICanGive,
+    parsed.data.lookingFor,
     parsed.data.availabilityUnit
   ]);
   if (moderationError) return { error: moderationError };
@@ -83,6 +85,7 @@ export async function createPost(_prev: FormState, formData: FormData): Promise<
       title: parsed.data.title,
       body: parsed.data.body,
       what_i_can_give: parsed.data.whatICanGive || null,
+      looking_for: parsed.data.lookingFor || null,
       location_mode: parsed.data.locationMode,
       approximate_location_label:
         parsed.data.locationMode === "online" ? "Online" : profile.public_location_label,
@@ -116,6 +119,7 @@ export async function updatePost(_prev: FormState, formData: FormData): Promise<
     parsed.data.title,
     parsed.data.body,
     parsed.data.whatICanGive,
+    parsed.data.lookingFor,
     parsed.data.availabilityUnit
   ]);
   if (moderationError) return { error: moderationError };
@@ -131,6 +135,7 @@ export async function updatePost(_prev: FormState, formData: FormData): Promise<
       title: parsed.data.title,
       body: parsed.data.body,
       what_i_can_give: parsed.data.whatICanGive || null,
+      looking_for: parsed.data.lookingFor || null,
       location_mode: parsed.data.locationMode,
       approval_policy: parsed.data.approvalPolicy,
       availability_total: parsed.data.availabilityTotal ?? null,

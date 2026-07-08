@@ -9,7 +9,7 @@ import { ShareButton } from "@/components/share-button";
 import { Badge, secondaryButtonClass } from "@/components/ui";
 import { toggleSavePost } from "@/lib/actions/posts";
 import { getSessionUser, isProfileSuspended } from "@/lib/auth";
-import { CATEGORY_LABEL, LOCATION_MODE_LABEL, POST_KIND_LABEL, timeAgo } from "@/lib/format";
+import { CATEGORY_LABEL, LOCATION_MODE_LABEL, POST_KIND_LABEL, formatAvailability, timeAgo } from "@/lib/format";
 import { getSiteUrl, publicStorageUrl } from "@/lib/utils";
 
 export async function generateMetadata({ params }: { params: Promise<{ id: string }> }): Promise<Metadata> {
@@ -67,7 +67,7 @@ export default async function PostPage({ params }: { params: Promise<{ id: strin
   const { data: post } = await supabase
     .from("posts")
     .select(
-      "id, owner_id, kind, category, title, body, what_i_can_give, location_mode, approximate_location_label, approval_policy, availability_total, availability_remaining, availability_unit, status, created_at"
+      "id, owner_id, kind, category, title, body, what_i_can_give, looking_for, location_mode, approximate_location_label, approval_policy, availability_total, availability_remaining, availability_unit, status, created_at"
     )
     .eq("id", id)
     .maybeSingle();
@@ -88,6 +88,11 @@ export default async function PostPage({ params }: { params: Promise<{ id: strin
   if (!isOwner && (await isProfileSuspended(owner.id))) notFound();
   const soldOut = post.availability_total !== null && (post.availability_remaining ?? 0) <= 0;
   const isSaved = Boolean(savedResult.data);
+  const availability = formatAvailability({
+    remaining: post.availability_remaining,
+    total: post.availability_total,
+    unit: post.availability_unit
+  });
 
   return (
     <main className="mx-auto w-full max-w-5xl px-5 py-10 sm:px-8">
@@ -139,12 +144,15 @@ export default async function PostPage({ params }: { params: Promise<{ id: strin
             </div>
           )}
 
-          {post.availability_total !== null && (
+          {post.looking_for && (
+            <div className="rounded-xl bg-[#f7f7f7] px-4 py-3 text-[13px] text-ink">
+              <span className="text-muted">Looking for:</span> {post.looking_for}
+            </div>
+          )}
+
+          {availability && (
             <div className="rounded-xl border border-line px-4 py-3 text-[13px] text-ink">
-              <span className="font-semibold">
-                {post.availability_remaining ?? 0} of {post.availability_total}
-              </span>{" "}
-              {post.availability_unit} available
+              <span className="font-semibold">{availability}</span>
               {post.approval_policy === "manual_approval" && <span className="text-muted"> · approval required</span>}
             </div>
           )}

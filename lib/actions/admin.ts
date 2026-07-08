@@ -176,3 +176,34 @@ export async function unblockProfileFromAdmin(formData: FormData): Promise<void>
   revalidatePath("/admin");
   revalidatePath("/");
 }
+
+const launchStatuses = new Set(["staged", "approved_first_batch", "approved_later_batch", "needs_edits"]);
+
+function launchStatusValue(formData: FormData): "staged" | "approved_first_batch" | "approved_later_batch" | "needs_edits" {
+  const status = textValue(formData, "status");
+  return launchStatuses.has(status) ? (status as "staged" | "approved_first_batch" | "approved_later_batch" | "needs_edits") : "staged";
+}
+
+export async function updateLaunchProfileStatus(formData: FormData): Promise<void> {
+  const { admin } = await requireAdminUser();
+  const profileId = textValue(formData, "launchProfileId");
+  if (!profileId) return;
+
+  await admin
+    .from("launch_content_profiles")
+    .update({ status: launchStatusValue(formData), notes: textValue(formData, "note") || null })
+    .eq("id", profileId);
+  revalidatePath("/admin");
+}
+
+export async function updateLaunchPostStatus(formData: FormData): Promise<void> {
+  const { admin } = await requireAdminUser();
+  const postId = textValue(formData, "launchPostId");
+  if (!postId) return;
+
+  await admin
+    .from("launch_content_posts")
+    .update({ status: launchStatusValue(formData), notes: textValue(formData, "note") || null })
+    .eq("id", postId);
+  revalidatePath("/admin");
+}

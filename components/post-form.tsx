@@ -13,6 +13,7 @@ export type PostFormValues = {
   title: string;
   body: string;
   what_i_can_give: string | null;
+  looking_for: string | null;
   location_mode: string;
   approval_policy: string;
   availability_total: number | null;
@@ -74,14 +75,24 @@ export function PostForm({ post, existingPhotos = [] }: { post?: PostFormValues;
       </Field>
 
       <Field
-        label="What I can give (for seeking posts)"
+        label="What I can give"
         htmlFor="whatICanGive"
-        hint="Optional. Shown as “Can give” on your post."
+        hint="Optional. Summarize the deliverable, item, or help you can offer."
       >
         <input
           id="whatICanGive"
           name="whatICanGive"
           defaultValue={post?.what_i_can_give ?? ""}
+          maxLength={500}
+          className={inputClass}
+        />
+      </Field>
+
+      <Field label="Looking for in exchange" htmlFor="lookingFor" hint="Optional. Keep it specific and non-monetary.">
+        <input
+          id="lookingFor"
+          name="lookingFor"
+          defaultValue={post?.looking_for ?? ""}
           maxLength={500}
           className={inputClass}
         />

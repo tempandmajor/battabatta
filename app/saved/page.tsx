@@ -13,7 +13,7 @@ export default async function SavedPostsPage() {
   const { data: saved } = await supabase
     .from("saved_posts")
     .select(
-      "post_id, posts (id, owner_id, kind, category, title, body, what_i_can_give, approximate_location_label, approval_policy, availability_total, availability_remaining, availability_unit, created_at, profiles:owner_id (display_name, handle, avatar_url, supporter_since), post_photos (path, position))"
+      "post_id, posts (id, owner_id, kind, category, title, body, what_i_can_give, looking_for, approximate_location_label, approval_policy, availability_total, availability_remaining, availability_unit, created_at, profiles:owner_id (display_name, handle, avatar_url, supporter_since), post_photos (path, position))"
     )
     .eq("profile_id", user.id)
     .order("created_at", { ascending: false });
