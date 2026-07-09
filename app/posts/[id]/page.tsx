@@ -12,7 +12,6 @@ import { toggleSavePost } from "@/lib/actions/posts";
 import { getSessionUser, isProfileSuspended } from "@/lib/auth";
 import { CATEGORY_LABEL, LOCATION_MODE_LABEL, POST_KIND_LABEL, formatAvailability, timeAgo } from "@/lib/format";
 import { getPublicPostDetail } from "@/lib/public-posts";
-import { createSupabaseAdminClient } from "@/lib/supabase/admin";
 import { getSiteUrl, publicStorageUrl } from "@/lib/utils";
 
 export const revalidate = 300;
@@ -66,15 +65,21 @@ export default async function PostPage({ params }: { params: Promise<{ id: strin
   if (!post) notFound();
 
   const { supabase, user } = await getSessionUser();
-  const admin = createSupabaseAdminClient();
   const isOwner = user?.id === post.owner_id;
   if (!isOwner && (await isProfileSuspended(post.owner.id))) notFound();
+
+  const adModerationPromise =
+    process.env.SUPABASE_SERVICE_ROLE_KEY
+      ? import("@/lib/supabase/admin").then(({ createSupabaseAdminClient }) =>
+          createSupabaseAdminClient().from("post_ad_moderation").select("status, review_note").eq("post_id", post.id).maybeSingle()
+        )
+      : Promise.resolve({ data: null });
 
   const [{ data: savedResult }, { data: adModeration }] = await Promise.all([
     user
       ? supabase.from("saved_posts").select("post_id").eq("profile_id", user.id).eq("post_id", post.id).maybeSingle()
       : Promise.resolve({ data: null }),
-    admin.from("post_ad_moderation").select("status, review_note").eq("post_id", post.id).maybeSingle()
+    adModerationPromise
   ]);
 
   const soldOut = post.availability_total !== null && (post.availability_remaining ?? 0) <= 0;
