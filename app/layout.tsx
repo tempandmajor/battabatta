@@ -1,5 +1,4 @@
 import type { Metadata } from "next";
-import Script from "next/script";
 import { Header } from "@/components/header";
 import { Footer } from "@/components/footer";
 import { getSiteUrl } from "@/lib/utils";
@@ -32,15 +31,16 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
     <html lang="en">
       <body className="flex min-h-screen flex-col bg-paper text-ink">
         {adsenseClientId && adsenseClientId.startsWith("ca-pub-") ? (
-          // Site-wide AdSense loader so Google can verify the site during
-          // review and serve Auto ads. Shares the id used by InFeedAdCard, so
-          // next/script loads adsbygoogle.js only once. Presence is gated on the
-          // client id alone (not NEXT_PUBLIC_ADS_ENABLED) so the code is
-          // discoverable before ad slots are switched on.
-          <Script
-            id="adsense-script"
+          // Site-wide AdSense loader so Google can verify the site during review
+          // and serve Auto ads. A plain <script> (not next/script) is used on
+          // purpose: next/script's beforeInteractive/afterInteractive strategies
+          // only emit a preload hint plus a client-side injector, so the literal
+          // tag is absent from the HTML source that AdSense's verifier scans.
+          // React hoists this async script into <head> and dedupes it by src.
+          // Gated on the client id alone (not NEXT_PUBLIC_ADS_ENABLED) so the
+          // code is discoverable before ad slots are switched on.
+          <script
             async
-            strategy="beforeInteractive"
             src={`https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${adsenseClientId}`}
             crossOrigin="anonymous"
           />
