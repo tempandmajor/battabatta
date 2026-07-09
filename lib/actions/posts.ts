@@ -3,12 +3,26 @@
 import { redirect } from "next/navigation";
 import { revalidatePath } from "next/cache";
 import { requireOnboardedUser } from "@/lib/auth";
-import { validatePublicContentForAdsense } from "@/lib/content-moderation";
+import { scanPublicContentForAdsense, validatePublicContentForAdsense } from "@/lib/content-moderation";
+import { moderateImages } from "@/lib/image-moderation";
+import { AD_MODERATION_STATUS, upsertPostAdModeration } from "@/lib/post-ad-moderation";
 import { uploadImage } from "@/lib/upload";
+import { publicStorageUrl } from "@/lib/utils";
 import { postSchema } from "@/lib/validation";
 import type { FormState } from "@/lib/actions/auth";
 
 const MAX_POST_PHOTOS = 3;
+
+/** Ad-safety flags for a post's current photos (text flags are scanned separately). */
+async function scanPostPhotosForAdsense(
+  supabase: Awaited<ReturnType<typeof requireOnboardedUser>>["supabase"],
+  postId: string
+): Promise<string[]> {
+  const { data: photos } = await supabase.from("post_photos").select("path").eq("post_id", postId);
+  const urls = (photos ?? []).map((photo) => publicStorageUrl("post-photos", photo.path));
+  const result = await moderateImages(urls);
+  return result.flags;
+}
 
 async function uploadPostPhotos(
   supabase: Awaited<ReturnType<typeof requireOnboardedUser>>["supabase"],
@@ -103,6 +117,22 @@ export async function createPost(_prev: FormState, formData: FormData): Promise<
   const photoError = await uploadPostPhotos(supabase, user.id, post.id, formData, 0);
   if (photoError) return { error: `Post created, but a photo failed: ${photoError}` };
 
+  const textFlags = scanPublicContentForAdsense([
+    parsed.data.title,
+    parsed.data.body,
+    parsed.data.whatICanGive,
+    parsed.data.lookingFor,
+    parsed.data.availabilityUnit,
+    profile.display_name
+  ]);
+  const imageFlags = await scanPostPhotosForAdsense(supabase, post.id);
+  await upsertPostAdModeration({
+    postId: post.id,
+    status: AD_MODERATION_STATUS.pending,
+    automatedFlags: [...textFlags, ...imageFlags],
+    note: "New listing requires ad-safety review before monetization."
+  });
+
   revalidatePath("/");
   redirect(`/posts/${post.id}`);
 }
@@ -158,6 +188,21 @@ export async function updatePost(_prev: FormState, formData: FormData): Promise<
     .eq("post_id", postId);
   const photoError = await uploadPostPhotos(supabase, user.id, postId, formData, existingCount ?? 0);
   if (photoError) return { error: `Post saved, but a photo failed: ${photoError}` };
+
+  const textFlags = scanPublicContentForAdsense([
+    parsed.data.title,
+    parsed.data.body,
+    parsed.data.whatICanGive,
+    parsed.data.lookingFor,
+    parsed.data.availabilityUnit
+  ]);
+  const imageFlags = await scanPostPhotosForAdsense(supabase, postId);
+  await upsertPostAdModeration({
+    postId,
+    status: AD_MODERATION_STATUS.pending,
+    automatedFlags: [...textFlags, ...imageFlags],
+    note: "Edited listing requires renewed ad-safety review before monetization."
+  });
 
   revalidatePath("/");
   revalidatePath(`/posts/${postId}`);

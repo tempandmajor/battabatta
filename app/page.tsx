@@ -5,6 +5,7 @@ import { PostCard, type PostCardData } from "@/components/post-card";
 import { InFeedAdCard } from "@/components/in-feed-ad-card";
 import { EmptyState } from "@/components/empty-state";
 import { getSessionUser } from "@/lib/auth";
+import { AD_MODERATION_STATUS, getPostAdModerationMap } from "@/lib/post-ad-moderation";
 
 export const dynamic = "force-dynamic";
 
@@ -81,6 +82,7 @@ export default async function DiscoverPage({
   const savedIds = new Set((savedResult.data ?? []).map((row: { post_id: string }) => row.post_id));
   const locationLabel = profileResult.data?.public_location_label;
   const results = (posts ?? []) as PostCardData[];
+  const moderationMap = await getPostAdModerationMap(results.map((post) => post.id));
 
   return (
     <main className="mx-auto w-full max-w-7xl px-5 py-10 sm:px-8">
@@ -123,7 +125,10 @@ export default async function DiscoverPage({
           {results.map((post, index) => (
             <Fragment key={post.id}>
               <PostCard post={post} saved={savedIds.has(post.id)} showSave={Boolean(user)} currentUserId={user?.id ?? null} />
-              {results.length >= 6 && index >= 5 && (index - 5) % 9 === 0 && (
+              {results.length >= 6 &&
+                moderationMap.get(post.id) === AD_MODERATION_STATUS.approved &&
+                index >= 5 &&
+                (index - 5) % 9 === 0 && (
                 <InFeedAdCard key={`ad-${index}`} />
               )}
             </Fragment>

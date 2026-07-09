@@ -2,6 +2,7 @@
 
 import { revalidatePath } from "next/cache";
 import { requireOnboardedUser } from "@/lib/auth";
+import { AD_MODERATION_STATUS, upsertPostAdModeration } from "@/lib/post-ad-moderation";
 import { reportSchema } from "@/lib/validation";
 import type { FormState } from "@/lib/actions/auth";
 
@@ -63,6 +64,16 @@ export async function submitReport(_prev: FormState, formData: FormData): Promis
     reason: parsed.data.reason
   });
   if (error) return { error: error.message };
+
+  if (parsed.data.postId) {
+    await upsertPostAdModeration({
+      postId: parsed.data.postId,
+      status: AD_MODERATION_STATUS.reported,
+      note: "Ads suppressed automatically after member report."
+    });
+    revalidatePath("/");
+    revalidatePath(`/posts/${parsed.data.postId}`);
+  }
 
   return { message: "Report received. Our moderators will review it. Thank you for keeping Battarbox safe." };
 }

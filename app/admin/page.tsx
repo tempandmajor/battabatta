@@ -4,9 +4,12 @@ import { ShieldAlert } from "lucide-react";
 import { Badge, ghostButtonClass, inputClass, primaryButtonClass, secondaryButtonClass } from "@/components/ui";
 import {
   actionReport,
+  approvePostAds,
   blockProfileFromAdmin,
   dismissReport,
   hidePost,
+  limitPostAds,
+  rejectPostAds,
   restorePost,
   setReportReviewing,
   suspendProfile,
@@ -79,6 +82,16 @@ type AuditRow = {
   target_post_id: string | null;
   note: string | null;
   created_at: string;
+};
+
+type PostAdModerationRow = {
+  post_id: string;
+  status: string;
+  automated_flags: string[] | null;
+  review_note: string | null;
+  reviewed_at: string | null;
+  last_scanned_at: string | null;
+  ads_enabled: boolean;
 };
 
 type DonationRow = {
@@ -204,6 +217,7 @@ export default async function AdminPage() {
     { data: messages },
     { data: offers },
     { data: moderation },
+    { data: postAdModeration },
     { data: audit },
     { data: donations },
     { data: subscriptions },
@@ -221,6 +235,11 @@ export default async function AdminPage() {
       admin.from("messages").select("id, body, sender_id").order("created_at", { ascending: false }).limit(200),
       admin.from("offers").select("id, requester_id, recipient_id, offered_item, requested_item, status").order("created_at", { ascending: false }).limit(200),
       admin.from("account_moderation").select("profile_id, status, reason, updated_at"),
+      admin
+        .from("post_ad_moderation")
+        .select("post_id, status, automated_flags, review_note, reviewed_at, last_scanned_at, ads_enabled")
+        .order("updated_at", { ascending: false })
+        .limit(100),
       admin
         .from("moderation_audit_log")
         .select("id, actor_id, action, report_id, target_profile_id, target_post_id, note, created_at")
@@ -258,6 +277,9 @@ export default async function AdminPage() {
   const offerMap = keyById((offers ?? []) as OfferRow[]);
   const moderationMap = new Map(((moderation ?? []) as ModerationRow[]).map((row) => [row.profile_id, row]));
   const openReports = typedReports.filter((report) => report.status === "open" || report.status === "reviewing");
+  const adQueue = ((postAdModeration ?? []) as PostAdModerationRow[]).filter(
+    (row) => row.status === "pending_review" || row.status === "reported" || row.status === "limited_ads"
+  );
   const totalDonations = ((donations ?? []) as DonationRow[]).reduce((total, donation) => total + donation.amount_cents, 0);
   const launchPostRows = (launchPosts ?? []) as LaunchPostRow[];
   const launchPostCountByProfile = new Map<string, number>();
@@ -387,6 +409,73 @@ export default async function AdminPage() {
                         </div>
                       )}
                     </div>
+                  </div>
+                </article>
+              );
+            })
+          )}
+        </div>
+      </section>
+
+      <section className="mt-10">
+        <div className="flex flex-wrap items-end justify-between gap-3">
+          <div>
+            <h2 className="text-xl font-bold tracking-[-0.02em]">Ad-safety queue</h2>
+            <p className="mt-1 text-[13px] text-muted">
+              {adQueue.length} listings currently blocked from ads pending review, report handling, or limited-ads review
+            </p>
+          </div>
+        </div>
+
+        <div className="mt-4 space-y-4">
+          {adQueue.length === 0 ? (
+            <p className="rounded-2xl border border-line bg-white p-5 text-[13px] text-muted">
+              No listings are waiting on ad-safety review.
+            </p>
+          ) : (
+            adQueue.map((row) => {
+              const post = postMap.get(row.post_id);
+              const owner = post ? profileMap.get(post.owner_id) : null;
+              return (
+                <article key={row.post_id} className="rounded-2xl border border-line bg-white p-5">
+                  <div className="flex flex-wrap items-start justify-between gap-3">
+                    <div>
+                      <div className="flex flex-wrap items-center gap-2">
+                        <Badge tone={row.status === "reported" ? "solid" : row.status === "limited_ads" ? "outline" : "soft"}>
+                          {row.status.replaceAll("_", " ")}
+                        </Badge>
+                        <span className="text-xs text-muted">
+                          {post ? `${post.title} · ${profileLabel(owner)}` : row.post_id}
+                        </span>
+                      </div>
+                      {row.automated_flags && row.automated_flags.length > 0 && (
+                        <p className="mt-2 text-xs text-muted">Automated flags: {row.automated_flags.join(", ")}</p>
+                      )}
+                      {row.review_note && <p className="mt-2 text-[13px] leading-6 text-[#3d3d3d]">{row.review_note}</p>}
+                    </div>
+                    {post && (
+                      <Link href={`/posts/${post.id}`} className={secondaryButtonClass}>
+                        Open listing
+                      </Link>
+                    )}
+                  </div>
+
+                  <div className="mt-4 grid gap-3 lg:grid-cols-3">
+                    <form action={approvePostAds} className="space-y-2">
+                      <input type="hidden" name="postId" value={row.post_id} />
+                      <NoteField id={`ads-approve-${row.post_id}`} />
+                      <button className={primaryButtonClass}>Approve ads</button>
+                    </form>
+                    <form action={limitPostAds} className="space-y-2">
+                      <input type="hidden" name="postId" value={row.post_id} />
+                      <NoteField id={`ads-limit-${row.post_id}`} />
+                      <button className={secondaryButtonClass}>Mark limited ads</button>
+                    </form>
+                    <form action={rejectPostAds} className="space-y-2">
+                      <input type="hidden" name="postId" value={row.post_id} />
+                      <NoteField id={`ads-reject-${row.post_id}`} />
+                      <button className={ghostButtonClass}>Keep ads off</button>
+                    </form>
                   </div>
                 </article>
               );

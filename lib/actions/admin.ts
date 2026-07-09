@@ -2,6 +2,7 @@
 
 import { revalidatePath } from "next/cache";
 import { requireAdminUser } from "@/lib/auth";
+import { AD_MODERATION_STATUS } from "@/lib/post-ad-moderation";
 
 type ModerationAction =
   | "report_reviewing"
@@ -9,6 +10,10 @@ type ModerationAction =
   | "report_actioned"
   | "post_hidden"
   | "post_restored"
+  | "post_ads_approved"
+  | "post_ads_limited"
+  | "post_ads_rejected"
+  | "post_ads_suppressed"
   | "profile_suspended"
   | "profile_unsuspended"
   | "profile_blocked"
@@ -101,6 +106,40 @@ export async function restorePost(formData: FormData): Promise<void> {
   revalidatePath("/admin");
   revalidatePath("/");
   revalidatePath(`/posts/${postId}`);
+}
+
+async function setPostAdModerationStatus(formData: FormData, status: (typeof AD_MODERATION_STATUS)[keyof typeof AD_MODERATION_STATUS], action: ModerationAction): Promise<void> {
+  const { admin, user } = await requireAdminUser();
+  const postId = textValue(formData, "postId");
+  const note = textValue(formData, "note");
+  if (!postId) return;
+
+  const now = new Date().toISOString();
+  await admin.from("post_ad_moderation").upsert({
+    post_id: postId,
+    status,
+    review_note: note || null,
+    reviewed_by: user.id,
+    reviewed_at: now,
+    ads_enabled: status === AD_MODERATION_STATUS.approved,
+    updated_at: now
+  });
+  await writeAudit({ actorId: user.id, action, targetPostId: postId, note });
+  revalidatePath("/admin");
+  revalidatePath("/");
+  revalidatePath(`/posts/${postId}`);
+}
+
+export async function approvePostAds(formData: FormData): Promise<void> {
+  return setPostAdModerationStatus(formData, AD_MODERATION_STATUS.approved, "post_ads_approved");
+}
+
+export async function limitPostAds(formData: FormData): Promise<void> {
+  return setPostAdModerationStatus(formData, AD_MODERATION_STATUS.limited, "post_ads_limited");
+}
+
+export async function rejectPostAds(formData: FormData): Promise<void> {
+  return setPostAdModerationStatus(formData, AD_MODERATION_STATUS.rejected, "post_ads_rejected");
 }
 
 export async function suspendProfile(formData: FormData): Promise<void> {
