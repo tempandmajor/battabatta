@@ -1,4 +1,4 @@
-import { createSupabaseAdminClient } from "@/lib/supabase/admin";
+import { createSupabaseServerClient } from "@/lib/supabase/server";
 
 export type PublicPostDetail = {
   id: string;
@@ -66,18 +66,18 @@ type RelatedPostRow = {
   approval_policy: string;
   created_at: string;
   profiles:
-    | Array<{
+    | {
         display_name: string | null;
         handle: string | null;
         avatar_url: string | null;
         supporter_since: string | null;
-      }>
+      }
     | null;
 };
 
 async function fetchPublicPostDetail(id: string): Promise<PublicPostDetail | null> {
-  const admin = createSupabaseAdminClient();
-  const { data: post } = await admin
+  const supabase = await createSupabaseServerClient();
+  const { data: post } = await supabase
     .from("posts")
     .select(
       "id, owner_id, kind, category, title, body, what_i_can_give, looking_for, location_mode, approximate_location_label, approval_policy, availability_total, availability_remaining, availability_unit, status, created_at, updated_at"
@@ -87,14 +87,14 @@ async function fetchPublicPostDetail(id: string): Promise<PublicPostDetail | nul
     .maybeSingle();
   if (!post) return null;
 
-  const [{ data: owner }, { data: photos }, { data: relatedRows }, { data: moderation }] = await Promise.all([
-    admin
+  const [{ data: owner }, { data: photos }, { data: relatedRows }] = await Promise.all([
+    supabase
       .from("profiles")
       .select("id, display_name, handle, bio, public_location_label, is_paused, avatar_url")
       .eq("id", post.owner_id)
       .maybeSingle(),
-    admin.from("post_photos").select("id, path").eq("post_id", id).order("position"),
-    admin
+    supabase.from("post_photos").select("id, path").eq("post_id", id).order("position"),
+    supabase
       .from("posts")
       .select(
         "id, owner_id, kind, category, title, body, what_i_can_give, looking_for, approximate_location_label, availability_total, availability_remaining, availability_unit, approval_policy, created_at, profiles!posts_owner_id_fkey(display_name, handle, avatar_url, supporter_since)"
@@ -103,11 +103,10 @@ async function fetchPublicPostDetail(id: string): Promise<PublicPostDetail | nul
       .eq("category", post.category)
       .neq("id", id)
       .limit(3)
-      .order("created_at", { ascending: false }),
-    admin.from("account_moderation").select("status").eq("profile_id", post.owner_id).maybeSingle()
+      .order("created_at", { ascending: false })
   ]);
 
-  if (!owner || owner.is_paused || (moderation && moderation.status !== "active")) return null;
+  if (!owner || owner.is_paused) return null;
 
   return {
     ...(post as Omit<PublicPostDetail, "owner" | "photos" | "related">),
@@ -128,10 +127,10 @@ async function fetchPublicPostDetail(id: string): Promise<PublicPostDetail | nul
       availability_unit: row.availability_unit,
       approval_policy: row.approval_policy,
       created_at: row.created_at,
-      owner_display_name: row.profiles?.[0]?.display_name ?? "Member",
-      owner_handle: row.profiles?.[0]?.handle ?? null,
-      owner_avatar_url: row.profiles?.[0]?.avatar_url ?? null,
-      owner_supporter_since: row.profiles?.[0]?.supporter_since ?? null
+      owner_display_name: row.profiles?.display_name ?? "Member",
+      owner_handle: row.profiles?.handle ?? null,
+      owner_avatar_url: row.profiles?.avatar_url ?? null,
+      owner_supporter_since: row.profiles?.supporter_since ?? null
     }))
   };
 }
