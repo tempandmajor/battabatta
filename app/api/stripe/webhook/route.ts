@@ -5,6 +5,7 @@ import { createStripeClient } from "@/lib/stripe";
 import { createSupabaseAdminClient } from "@/lib/supabase/admin";
 import { sendEmail } from "@/lib/email";
 import { nonprofit } from "@/lib/nonprofit";
+import { finomePayment, finomeRefund, finomeSubscription, stripeMrrCents } from "@/lib/finome/next";
 
 type AdminClient = ReturnType<typeof createSupabaseAdminClient>;
 type DonationReceipt = {
@@ -230,6 +231,70 @@ async function handleInvoicePaymentFailed(supabase: AdminClient, invoice: Stripe
     .eq("stripe_customer_id", customerId);
 }
 
+// Finome promoters earn on a referred member's first supporter payment. Only
+// the recurring supporter plan is reported (live mode only); one-time
+// donations are not. Never affects the webhook response.
+async function reportToFinome(supabase: AdminClient, event: Stripe.Event) {
+  if (!event.livemode) return;
+  const occurredAt = new Date(event.created * 1000);
+  const emailFor = async (customer: string | { id: string } | null | undefined, fallback?: string | null) => {
+    const customerId = typeof customer === "string" ? customer : customer?.id;
+    if (customerId) {
+      const { data } = await supabase
+        .from("profile_private")
+        .select("email")
+        .eq("stripe_customer_id", customerId)
+        .maybeSingle();
+      if (data?.email) return data.email;
+    }
+    return fallback ?? null;
+  };
+
+  try {
+    switch (event.type) {
+      case "invoice.paid": {
+        const invoice = event.data.object;
+        if (!invoice.subscription || !invoice.id) return;
+        await finomePayment({
+          email: await emailFor(invoice.customer, invoice.customer_email),
+          paymentId: invoice.id,
+          amountCents: invoice.amount_paid,
+          currency: invoice.currency,
+          occurredAt
+        });
+        return;
+      }
+      case "charge.refunded": {
+        const charge = event.data.object;
+        const invoiceId = typeof charge.invoice === "string" ? charge.invoice : charge.invoice?.id;
+        if (!invoiceId || charge.amount_refunded < charge.amount) return;
+        await finomeRefund({
+          email: await emailFor(charge.customer, charge.billing_details?.email),
+          paymentId: invoiceId
+        });
+        return;
+      }
+      case "customer.subscription.created":
+      case "customer.subscription.updated":
+      case "customer.subscription.deleted": {
+        const subscription = event.data.object;
+        await finomeSubscription({
+          email: await emailFor(subscription.customer),
+          status: event.type === "customer.subscription.deleted" ? "canceled" : subscription.status,
+          plan: "supporter",
+          mrrCents: stripeMrrCents(subscription),
+          occurredAt
+        });
+        return;
+      }
+      default:
+        return;
+    }
+  } catch (error) {
+    console.error("[finome] reporting failed", error instanceof Error ? error.message : error);
+  }
+}
+
 export async function POST(request: NextRequest) {
   const stripe = createStripeClient();
   const body = await request.text();
@@ -311,6 +376,8 @@ export async function POST(request: NextRequest) {
   if (error) {
     return NextResponse.json({ error: "Webhook persistence failed" }, { status: 500 });
   }
+
+  await reportToFinome(supabase, event);
 
   return NextResponse.json({ received: true });
 }

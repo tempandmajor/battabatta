@@ -1,9 +1,10 @@
 import { createServerClient } from "@supabase/ssr";
-import { NextResponse, type NextRequest } from "next/server";
+import { NextResponse, type NextFetchEvent, type NextRequest } from "next/server";
+import { captureFinomeClick, finomeSignup } from "@/lib/finome/next";
 
 // Refreshes the Supabase session cookie on every request so server components
 // always see a valid session. Auth gating happens in lib/auth.ts helpers.
-export async function middleware(request: NextRequest) {
+export async function middleware(request: NextRequest, event: NextFetchEvent) {
   let response = NextResponse.next({ request });
 
   const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
@@ -23,7 +24,15 @@ export async function middleware(request: NextRequest) {
     }
   });
 
-  await supabase.auth.getUser();
+  const {
+    data: { user }
+  } = await supabase.auth.getUser();
+
+  // Finome promoter links land here with ?fnm=<click id>; a new account made
+  // after one is reported so the promoter can earn on its first payment.
+  const finomeClick = captureFinomeClick(request, response);
+  if (user && finomeClick) finomeSignup(request, response, user, event, finomeClick);
+
   return response;
 }
 
