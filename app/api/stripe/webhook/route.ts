@@ -231,9 +231,43 @@ async function handleInvoicePaymentFailed(supabase: AdminClient, invoice: Stripe
     .eq("stripe_customer_id", customerId);
 }
 
-// Finome promoters earn on a referred member's first supporter payment. Only
-// the recurring supporter plan is reported (live mode only); one-time
-// donations are not. Never affects the webhook response.
+// Finome promoters earn on a referred member's first subscription payment.
+// Every recurring plan is reported (live mode only), so new paid plans count
+// as soon as they exist; one-time payments are not. Never affects the webhook
+// response.
+// Newer Stripe API versions moved the subscription under invoice.parent; read
+// both so reporting survives a webhook endpoint upgrade.
+function invoiceSubscriptionId(invoice: Stripe.Invoice): string | null {
+  const legacy = (invoice as unknown as { subscription?: string | { id: string } | null }).subscription;
+  const parent = (invoice as unknown as { parent?: { subscription_details?: { subscription?: string | { id: string } | null } | null } | null }).parent;
+  const ref = legacy ?? parent?.subscription_details?.subscription ?? null;
+  return typeof ref === "string" ? ref : ref?.id ?? null;
+}
+
+function subscriptionPlanName(subscription: Stripe.Subscription): string {
+  const price = subscription.items.data[0]?.price;
+  const product = typeof price?.product === "string" ? price.product : price?.product?.id;
+  return (price?.lookup_key || price?.nickname || product || "plan").slice(0, 80);
+}
+
+// Newer API versions dropped charge.invoice; an InvoicePayment links the
+// payment intent back to its invoice instead.
+async function chargeInvoiceId(charge: Stripe.Charge): Promise<string | null> {
+  const legacy = (charge as unknown as { invoice?: string | { id: string } | null }).invoice;
+  if (legacy) return typeof legacy === "string" ? legacy : legacy.id;
+  const paymentIntent = typeof charge.payment_intent === "string" ? charge.payment_intent : charge.payment_intent?.id;
+  if (!paymentIntent) return null;
+  try {
+    const res = await createStripeClient().rawRequest("GET", "/v1/invoice_payments", {
+      "payment[type]": "payment_intent", "payment[payment_intent]": paymentIntent, limit: 1,
+    });
+    const invoice = (res as unknown as { data?: { invoice?: string | { id: string } }[] }).data?.[0]?.invoice;
+    return typeof invoice === "string" ? invoice : invoice?.id ?? null;
+  } catch {
+    return null;
+  }
+}
+
 async function reportToFinome(supabase: AdminClient, event: Stripe.Event) {
   if (!event.livemode) return;
   const occurredAt = new Date(event.created * 1000);
@@ -254,7 +288,7 @@ async function reportToFinome(supabase: AdminClient, event: Stripe.Event) {
     switch (event.type) {
       case "invoice.paid": {
         const invoice = event.data.object;
-        if (!invoice.subscription || !invoice.id) return;
+        if (!invoiceSubscriptionId(invoice) || !invoice.id) return;
         await finomePayment({
           email: await emailFor(invoice.customer, invoice.customer_email),
           paymentId: invoice.id,
@@ -266,8 +300,9 @@ async function reportToFinome(supabase: AdminClient, event: Stripe.Event) {
       }
       case "charge.refunded": {
         const charge = event.data.object;
-        const invoiceId = typeof charge.invoice === "string" ? charge.invoice : charge.invoice?.id;
-        if (!invoiceId || charge.amount_refunded < charge.amount) return;
+        if (charge.amount_refunded < charge.amount) return;
+        const invoiceId = await chargeInvoiceId(charge);
+        if (!invoiceId) return;
         await finomeRefund({
           email: await emailFor(charge.customer, charge.billing_details?.email),
           paymentId: invoiceId
@@ -281,7 +316,7 @@ async function reportToFinome(supabase: AdminClient, event: Stripe.Event) {
         await finomeSubscription({
           email: await emailFor(subscription.customer),
           status: event.type === "customer.subscription.deleted" ? "canceled" : subscription.status,
-          plan: "supporter",
+          plan: subscriptionPlanName(subscription),
           mrrCents: stripeMrrCents(subscription),
           occurredAt
         });
